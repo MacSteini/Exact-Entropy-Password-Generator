@@ -725,6 +725,50 @@ font-weight: 820;
 text-wrap: balance;
 }
 
+.header-title-toggle {
+display: inline-block;
+padding: 0;
+border: 0;
+border-radius: 0;
+background: transparent;
+color: inherit;
+font: inherit;
+font-weight: inherit;
+line-height: inherit;
+text-align: center;
+cursor: pointer;
+box-decoration-break: clone;
+-webkit-box-decoration-break: clone;
+}
+
+.header-title-toggle::after {
+content: "";
+display: none;
+inline-size: 0.45em;
+block-size: 0.45em;
+border-inline-end: 0.08em solid currentColor;
+border-block-end: 0.08em solid currentColor;
+transform: translateY(-0.12em) rotate(45deg);
+transition: transform 120ms ease;
+}
+
+.header-title-toggle[aria-expanded="true"]::after {
+transform: translateY(0.08em) rotate(225deg);
+}
+
+.header-title-toggle:hover {
+background: transparent;
+}
+
+.header-title-toggle:active {
+transform: none;
+}
+
+.header-title-toggle:focus-visible {
+outline: 2px solid var(--focus);
+outline-offset: 0.25rem;
+}
+
 h1::after {
 content: "";
 position: absolute;
@@ -733,6 +777,27 @@ inset-block-end: 0;
 block-size: .2rem;
 border-radius: 999px;
 background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+
+.header-details {
+display: grid;
+gap: var(--space-sm);
+justify-items: center;
+inline-size: 100%;
+max-block-size: 30rem;
+overflow: visible;
+opacity: 1;
+visibility: visible;
+transition: max-block-size 180ms ease, opacity 140ms ease;
+}
+
+.header-row.is-collapsed .header-details {
+max-block-size: 0;
+overflow: hidden;
+opacity: 0;
+visibility: hidden;
+pointer-events: none;
+transition: max-block-size 180ms ease, opacity 120ms ease, visibility 0s linear 180ms;
 }
 
 h2:not(.sr-only) {
@@ -926,6 +991,7 @@ inline-size: auto;
 min-inline-size: min(100%, 12rem);
 max-inline-size: 100%;
 cursor: copy;
+transition: inline-size 160ms ease, border-color 120ms ease, box-shadow 120ms ease;
 }
 
 button {
@@ -1204,6 +1270,55 @@ h1 {
 font-size: 1.7rem;
 }
 
+.header-title-toggle {
+position: relative;
+display: block;
+inline-size: 100%;
+padding: 0.15rem 2.4rem;
+border-radius: var(--radius-sm);
+transition: background-color 120ms ease;
+}
+
+.header-title-toggle > span {
+display: block;
+min-inline-size: 0;
+text-align: center;
+}
+
+.header-title-toggle::after {
+display: block;
+position: absolute;
+inset-inline-end: 0.95rem;
+inset-block-start: 50%;
+transform: translateY(-65%) rotate(45deg);
+transform-origin: 50% 50%;
+}
+
+.header-title-toggle[aria-expanded="true"]::after {
+transform: translateY(-35%) rotate(225deg);
+}
+
+.header-title-toggle:hover {
+background: var(--secondary-bg);
+}
+
+.header-row.is-collapsed {
+gap: 0;
+}
+
+h1::after {
+inset-inline: 16%;
+}
+
+.length-control {
+grid-template-columns: auto auto auto;
+align-items: center;
+}
+
+.length-control input {
+grid-column: auto;
+}
+
 .card {
 padding: var(--space-md);
 }
@@ -1255,6 +1370,16 @@ grid-template-columns: 1fr;
 grid-template-columns: minmax(0, max-content) auto;
 }
 }
+
+@media (prefers-reduced-motion: reduce) {
+.header-details,
+.header-row.is-collapsed .header-details,
+.header-title-toggle,
+.header-title-toggle::after,
+#password {
+transition: none;
+}
+}
 </style>
 </head>
 
@@ -1262,7 +1387,13 @@ grid-template-columns: minmax(0, max-content) auto;
 <main>
 <header>
 <div class="header-row">
-<h1 data-i18n="title">Exact Entropy Password Generator</h1>
+<h1>
+<button id="headerToggle" class="header-title-toggle" type="button" aria-expanded="true" aria-controls="headerDetails">
+<span data-i18n="title">Exact Entropy Password Generator</span>
+</button>
+</h1>
+
+<div id="headerDetails" class="header-details">
 <p class="header-link-row">
 <a class="github-link" href="https://github.com/macsteini/exact-entropy-password-generator" target="_blank" rel="noopener noreferrer" title="GitHub">GitHub</a>
 </p>
@@ -1283,6 +1414,7 @@ grid-template-columns: minmax(0, max-content) auto;
 <option value="de-DE">🇩🇪</option>
 </select>
 </label>
+</div>
 </div>
 </div>
 </div>
@@ -1444,6 +1576,8 @@ randomColorLayout: "Random color layout",
 title: "Exact Entropy Password Generator",
 introPrimary: "Creates passwords locally in your browser with <code>crypto.getRandomValues()</code>. Passwords, settings and entropy values are not sent anywhere.",
 introSecondary: "Entropy is calculated from the current length and character groups; every selected group appears at least once. The value applies only while you use the generated password unchanged.",
+showHeaderDetails: "Show header details",
+hideHeaderDetails: "Hide header details",
 switchToLight: "Switch to light mode",
 switchToDark: "Switch to dark mode",
 settingsRegionLabel: "Password settings",
@@ -1499,6 +1633,8 @@ randomColorLayout: "Zufälliges Farblayout",
 title: "Generator für Passwörter mit exakter Entropie",
 introPrimary: "Erzeugt Passwörter lokal im Browser mit <code>crypto.getRandomValues()</code>. Passwort, Einstellungen und Entropiewerte werden nirgendwohin übertragen.",
 introSecondary: "Die Entropie wird aus aktueller Länge und Zeichengruppen berechnet; jede ausgewählte Gruppe kommt mindestens einmal vor. Der Wert gilt nur, solange du das generierte Passwort unverändert nutzt.",
+showHeaderDetails: "Headerdetails anzeigen",
+hideHeaderDetails: "Headerdetails ausblenden",
 switchToLight: "Hellmodus aktivieren",
 switchToDark: "Darkmode aktivieren",
 settingsRegionLabel: "Passworteinstellungen",
@@ -1574,16 +1710,26 @@ const paletteToggle = document.getElementById("paletteToggle");
 const themeToggle = document.getElementById("themeToggle");
 const languageSelect = document.getElementById("languageSelect");
 const copyButton = document.getElementById("copy");
+const headerToggle = document.getElementById("headerToggle");
+const headerRow = document.querySelector(".header-row");
+const compactHeaderMedia = window.matchMedia("(max-width: 44rem)");
 const themeMedia = window.matchMedia("(prefers-color-scheme: dark)");
 
 let themeSource = "auto";
 let copyResetTimer = 0;
+let headerDisclosureOverridden = false;
 
 translateUI();
+applyDefaultHeaderDisclosure();
 applyStoredOrDefaultPalette();
 applyStoredOrSystemTheme();
 
 document.getElementById("generate").addEventListener("click", generateAndRender);
+
+headerToggle.addEventListener("click", () => {
+setHeaderCollapsed(!headerRow.classList.contains("is-collapsed"));
+headerDisclosureOverridden = true;
+});
 
 copyButton.addEventListener("click", copyPassword);
 passwordOutput.addEventListener("click", copyPassword);
@@ -1651,6 +1797,10 @@ localStorage.removeItem(THEME_STORAGE_KEY);
 applyTheme(systemTheme());
 });
 
+compactHeaderMedia.addEventListener("change", () => {
+if (!headerDisclosureOverridden) applyDefaultHeaderDisclosure();
+});
+
 document.querySelectorAll("input:not(#password)").forEach(input => {
 input.addEventListener("input", generateAndRender);
 input.addEventListener("change", generateAndRender);
@@ -1712,7 +1862,18 @@ document.querySelectorAll("[data-i18n-aria]").forEach(element => {
 element.setAttribute("aria-label", t(element.dataset.i18nAria));
 });
 
+setHeaderCollapsed(headerRow.classList.contains("is-collapsed"));
 applyPalette(currentPalette());
+}
+
+function setHeaderCollapsed(collapsed) {
+headerRow.classList.toggle("is-collapsed", collapsed);
+headerToggle.setAttribute("aria-expanded", String(!collapsed));
+headerToggle.setAttribute("title", collapsed ? t("showHeaderDetails") : t("hideHeaderDetails"));
+}
+
+function applyDefaultHeaderDisclosure() {
+setHeaderCollapsed(compactHeaderMedia.matches);
 }
 
 function systemTheme() {
