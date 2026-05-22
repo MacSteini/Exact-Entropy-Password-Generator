@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Exact Entropy Password Generator</title>
 
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f1416'/%3E%3Cpath d='M32 10l18 7v14c0 12-7.4 20.8-18 23-10.6-2.2-18-11-18-23V17l18-7z' fill='%235eead4'/%3E%3Cpath d='M25 29v-5a7 7 0 0114 0v5' fill='none' stroke='%230f1416' stroke-width='4' stroke-linecap='round'/%3E%3Crect x='22' y='28' width='20' height='16' rx='3' fill='%230f1416'/%3E%3Ccircle cx='32' cy='36' r='2.3' fill='%235eead4'/%3E%3Ccircle cx='21' cy='20' r='2' fill='%230f1416'/%3E%3Ccircle cx='43' cy='20' r='2' fill='%230f1416'/%3E%3Ccircle cx='22' cy='47' r='2' fill='%230f1416'/%3E%3Ccircle cx='42' cy='47' r='2' fill='%230f1416'/%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://rsms.me/" />
 <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
 
@@ -71,25 +72,26 @@ text-size-adjust: 100%;
 
 --content-max: 53.75rem;
 --page-pad: clamp(1rem, .55rem + 2vw, 2rem);
---space-2xs: clamp(0.35rem, .31rem + .2vw, .45rem);
---space-xs: clamp(0.5rem, .44rem + .3vw, .65rem);
---space-sm: clamp(0.65rem, .56rem + .45vw, .9rem);
---space-md: clamp(0.85rem, .71rem + .7vw, 1.25rem);
---space-lg: clamp(1rem, .8rem + 1vw, 1.65rem);
---space-xl: clamp(1.25rem, .95rem + 1.5vw, 2.25rem);
+--space-2xs: 0.35rem;
+--space-xs: 0.5rem;
+--space-sm: 0.75rem;
+--space-md: 1rem;
+--space-lg: 1.25rem;
+--space-xl: 1.75rem;
 
---text-xs: clamp(0.78rem, .75rem + .16vw, .86rem);
---text-sm: clamp(0.9rem, .86rem + .18vw, .96rem);
---text-base: clamp(1rem, .96rem + .22vw, 1.075rem);
---text-md: clamp(1.05rem, .98rem + .36vw, 1.2rem);
---text-lg: clamp(1.2rem, 1.08rem + .62vw, 1.48rem);
---text-xl: clamp(1.55rem, 1.32rem + 1.15vw, 2.1rem);
+--text-xs: 0.8rem;
+--text-sm: 0.92rem;
+--text-base: 1rem;
+--text-md: 1.15rem;
+--text-lg: 1.32rem;
+--text-xl: 2rem;
 
---radius-sm: clamp(0.5rem, .42rem + .35vw, .7rem);
---radius-md: clamp(0.75rem, .62rem + .55vw, 1rem);
---radius-lg: clamp(1rem, .82rem + .8vw, 1.35rem);
---control-pad-block: clamp(0.55rem, .48rem + .32vw, .72rem);
---control-pad-inline: clamp(0.7rem, .58rem + .55vw, 1rem);
+--radius-sm: 0.45rem;
+--radius-md: 0.5rem;
+--radius-lg: 0.5rem;
+--icon-control-size: 2.75rem;
+--control-pad-block: 0.58rem;
+--control-pad-inline: 0.85rem;
 }
 
 @supports (font-variation-settings: normal) {
@@ -612,10 +614,7 @@ min-inline-size: 20rem;
 body {
 margin: 0;
 padding: var(--page-pad);
-background:
-radial-gradient(circle at 18% 0%, var(--bg-glow), transparent 28rem),
-radial-gradient(circle at 88% 12%, var(--bg-glow-warm), transparent 24rem),
-var(--bg);
+background: var(--bg);
 color: var(--fg);
 font-size: var(--text-base);
 line-height: 1.5;
@@ -625,38 +624,48 @@ main {
 width: min(100%, var(--content-max));
 margin-inline: auto;
 display: grid;
-gap: var(--space-md);
+gap: var(--space-lg);
 }
 
 .header-row {
-display: flex;
-flex-wrap: wrap;
-justify-content: space-between;
-gap: var(--space-md);
-align-items: flex-start;
+display: grid;
+gap: var(--space-sm);
+justify-items: center;
+text-align: center;
 }
 
-.header-row > :first-child {
-flex: 1 1 min(100%, 34rem);
+.header-content {
+display: grid;
+grid-template-columns: minmax(0, 1fr) auto;
+gap: var(--space-lg);
+align-items: center;
+inline-size: 100%;
+text-align: start;
+}
+
+.header-copy {
 min-inline-size: 0;
+display: grid;
+gap: var(--space-xs);
+font-size: var(--text-sm);
 }
 
 .top-controls {
 display: flex;
 flex: 0 0 auto;
-flex-wrap: wrap;
+flex-direction: column;
 gap: var(--space-xs);
-justify-content: flex-end;
+justify-content: center;
 align-items: center;
-margin-inline-start: auto;
 min-inline-size: 0;
 }
 
 .theme-toggle {
-min-inline-size: clamp(2.5rem, 2.2rem + 1vw, 2.9rem);
-padding: var(--control-pad-block) var(--control-pad-inline);
+inline-size: var(--icon-control-size);
+block-size: var(--icon-control-size);
+padding: 0;
 font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI Symbol", "Apple Color Emoji", "Segoe UI Emoji", sans-serif;
-font-size: clamp(1.05rem, .95rem + .5vw, 1.25rem);
+font-size: 1.15rem;
 font-feature-settings: normal;
 line-height: 1;
 }
@@ -667,26 +676,12 @@ display: inline-flex;
 align-items: center;
 }
 
-.language-control::after {
-content: "";
-position: absolute;
-inset-inline-end: .85rem;
-inset-block-start: 50%;
-inline-size: .42rem;
-block-size: .42rem;
-border-inline-end: 1.5px solid currentColor;
-border-block-end: 1.5px solid currentColor;
-transform: translateY(-65%) rotate(45deg);
-pointer-events: none;
-opacity: .72;
-}
-
 .language-control select {
 appearance: none;
 -webkit-appearance: none;
-inline-size: auto;
-min-inline-size: clamp(3.8rem, 3.2rem + 2vw, 4.6rem);
-padding: var(--control-pad-block) calc(var(--control-pad-inline) + 1.15rem) var(--control-pad-block) var(--control-pad-inline);
+inline-size: var(--icon-control-size);
+block-size: var(--icon-control-size);
+padding: 0;
 border: 1px solid var(--border);
 border-radius: var(--radius-sm);
 background: var(--secondary-bg);
@@ -694,6 +689,8 @@ color: var(--fg);
 font: inherit;
 font-weight: 650;
 line-height: 1;
+text-align: center;
+text-align-last: center;
 cursor: pointer;
 }
 
@@ -718,14 +715,27 @@ margin: 0;
 }
 
 h1 {
-margin-block-end: var(--space-xs);
-font-size: var(--text-xl);
+position: relative;
+max-inline-size: 48rem;
+padding-block-end: var(--space-xs);
+font-size: clamp(1.85rem, 1.18rem + 3vw, 3rem);
 line-height: 1.08;
-letter-spacing: -0.035em;
-font-weight: 760;
+letter-spacing: 0;
+font-weight: 820;
+text-wrap: balance;
 }
 
-h2 {
+h1::after {
+content: "";
+position: absolute;
+inset-inline: 22%;
+inset-block-end: 0;
+block-size: .2rem;
+border-radius: 999px;
+background: linear-gradient(90deg, transparent, var(--accent), transparent);
+}
+
+h2:not(.sr-only) {
 display: flex;
 flex-wrap: wrap;
 align-items: center;
@@ -733,7 +743,7 @@ gap: var(--space-2xs);
 margin-block-end: var(--space-sm);
 font-size: var(--text-lg);
 line-height: 1.2;
-letter-spacing: -0.02em;
+letter-spacing: 0;
 font-weight: 720;
 }
 
@@ -742,50 +752,24 @@ border: 1px solid var(--border);
 border-radius: var(--radius-lg);
 padding: var(--space-lg);
 background: linear-gradient(145deg, var(--card-bg), var(--accent-soft));
-box-shadow: 0 .75rem 2rem var(--shadow);
+box-shadow: 0 .5rem 1.4rem var(--shadow);
 }
 
 .section-block {
 display: grid;
-gap: var(--space-sm);
-}
-
-.section-block + .section-block {
-margin-block-start: var(--space-md);
-padding-block-start: var(--space-md);
-border-block-start: 1px solid var(--soft-border);
-}
-
-.section-block + .stats-block {
-margin-block-start: var(--space-xs);
-padding-block-start: 0;
-border-block-start: 0;
+gap: var(--space-md);
 }
 
 .result-card {
 display: grid;
-gap: var(--space-md);
+gap: var(--space-lg);
 }
 
-.result-card .section-block + .section-block {
-margin-block-start: 0;
-padding-block-start: 0;
-border-block-start: 0;
-}
-
-.password-actions-block {
-gap: var(--space-sm);
-}
-
-.grid {
+.settings-panel {
 display: grid;
-grid-template-columns: repeat(auto-fit, minmax(min(100%, clamp(13.75rem, 42vw, 17.5rem)), 1fr));
-gap: var(--space-sm);
-}
-
-.settings-grid {
-grid-template-columns: repeat(auto-fit, minmax(min(100%, clamp(16rem, 48vw, 24rem)), 1fr));
-align-items: center;
+grid-template-columns: max-content minmax(0, 1fr);
+gap: var(--space-md) var(--space-lg);
+align-items: start;
 }
 
 label {
@@ -801,8 +785,8 @@ input[type="checkbox"] {
 appearance: none;
 -webkit-appearance: none;
 position: relative;
-inline-size: clamp(1.05rem, .98rem + .25vw, 1.18rem);
-block-size: clamp(1.05rem, .98rem + .25vw, 1.18rem);
+inline-size: 1.12rem;
+block-size: 1.12rem;
 flex: 0 0 auto;
 margin: 0;
 border: 1.5px solid var(--border);
@@ -840,16 +824,9 @@ outline: 2px solid var(--focus);
 outline-offset: 2px;
 }
 
-label:has(> input[type="checkbox"]) {
-display: flex;
-flex-wrap: wrap;
-gap: var(--space-xs);
-align-items: center;
-}
-
 input[type="number"] {
-inline-size: clamp(4.75rem, 3.9rem + 3vw, 8rem);
-padding: clamp(0.4rem, .34rem + .28vw, .5rem);
+inline-size: 5rem;
+padding: 0.42rem 0.5rem;
 border-radius: var(--radius-sm);
 border: 1px solid var(--border);
 font: inherit;
@@ -858,12 +835,83 @@ color: var(--fg);
 }
 
 #length {
-inline-size: clamp(4.5rem, 4.1rem + 1vw, 5rem);
+inline-size: 4.75rem;
+}
+
+.length-control {
+display: grid;
+grid-template-columns: auto auto;
+align-items: start;
+justify-content: start;
+gap: var(--space-sm);
+font-weight: 650;
+}
+
+.length-control input {
+grid-column: 1 / -1;
+}
+
+.control-label,
+.password-label {
+display: inline-flex;
+align-items: center;
+gap: var(--space-xs);
+font-weight: 650;
+}
+
+.group-fieldset {
+min-inline-size: 0;
+margin: 0;
+padding: 0;
+border: 0;
+display: grid;
+gap: var(--space-md);
+}
+
+.group-legend {
+display: flex;
+flex-wrap: wrap;
+align-items: center;
+gap: var(--space-2xs);
+padding: 0;
+font-size: var(--text-base);
+font-weight: 720;
+line-height: 1.25;
+}
+
+.group-options {
+display: grid;
+grid-template-columns: repeat(2, minmax(0, 1fr));
+gap: var(--space-sm);
+margin-block-start: var(--space-md);
+}
+
+.group-option {
+display: grid;
+grid-template-columns: auto minmax(0, 1fr) auto;
+align-items: center;
+gap: var(--space-xs);
+padding: 0.62rem 0.7rem;
+border: 1px solid var(--soft-border);
+border-radius: var(--radius-sm);
+background: var(--secondary-bg);
+min-block-size: 3.2rem;
+}
+
+.group-option:has(input:checked) {
+border-color: var(--accent-border);
+background: var(--secondary-hover-bg);
+}
+
+.group-label {
+display: block;
+font-weight: 650;
+line-height: 1.3;
 }
 
 input[type="text"] {
 inline-size: 100%;
-padding: clamp(0.65rem, .55rem + .5vw, .85rem);
+padding: 0.7rem 0.8rem;
 border-radius: var(--radius-md);
 border: 1px solid var(--border);
 font: 500 var(--text-base) ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -874,6 +922,9 @@ color: var(--fg);
 }
 
 #password {
+inline-size: auto;
+min-inline-size: min(100%, 12rem);
+max-inline-size: 100%;
 cursor: copy;
 }
 
@@ -911,19 +962,22 @@ background: var(--secondary-hover-bg);
 }
 
 .header-link-row {
-margin-block-start: var(--space-xs);
+display: flex;
+justify-content: center;
 }
 
 .github-link {
 display: inline-flex;
 align-items: center;
 justify-content: center;
-padding: .35rem .6rem;
+inline-size: fit-content;
+padding: 0.45rem 0.7rem;
 border-radius: var(--radius-sm);
 font-size: var(--text-xs);
-font-weight: 650;
+font-weight: 720;
 line-height: 1;
 text-decoration: none;
+box-shadow: inset 0 0 0 1px var(--accent-border);
 transition: background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
 }
 
@@ -935,7 +989,7 @@ outline-offset: 2px;
 .actions {
 display: flex;
 flex-wrap: wrap;
-gap: var(--space-xs);
+gap: var(--space-sm);
 justify-content: flex-end;
 align-items: center;
 }
@@ -943,61 +997,47 @@ align-items: center;
 .password-box {
 position: relative;
 display: grid;
-gap: var(--space-xs);
-}
-
-.password-box::after {
-content: attr(data-copy-status);
-position: absolute;
-inset-block-start: calc(100% + var(--space-2xs));
-inset-inline-end: 0;
-font-size: var(--text-xs);
-line-height: 1.35;
-color: var(--muted);
-opacity: 0;
-transform: translateY(-0.2rem);
-transition: opacity 140ms ease, transform 140ms ease;
-pointer-events: none;
-}
-
-.password-box.is-copied::after {
-opacity: 1;
-transform: translateY(0);
-}
-
-.password-box.is-copied #password {
-border-color: var(--button-bg);
-box-shadow: 0 0 0 3px var(--secondary-bg);
+gap: var(--space-sm);
+justify-items: start;
 }
 
 .stats {
 display: grid;
-grid-template-columns: repeat(auto-fit, minmax(min(100%, clamp(8.75rem, 19vw, 11.5rem)), 1fr));
+grid-template-columns: repeat(3, minmax(0, 1fr));
 gap: var(--space-sm);
 }
 
 .stat {
+display: grid;
+grid-template-columns: auto minmax(0, max-content);
+align-items: baseline;
+gap: 0.4rem;
 border: 1px solid var(--accent-border);
 border-radius: var(--radius-md);
-padding: clamp(0.6rem, .5rem + .45vw, .8rem);
+padding: 0.58rem 0.65rem;
 background: linear-gradient(145deg, var(--stat-bg), var(--accent-soft));
 min-inline-size: 0;
 }
 
 .stat-label {
 display: flex;
-flex-wrap: wrap;
+flex-wrap: nowrap;
 align-items: center;
 gap: var(--space-2xs);
+min-inline-size: 0;
+font-size: var(--text-sm);
+white-space: nowrap;
 }
 
 .stat strong {
-display: block;
-margin-block-start: var(--space-2xs);
-font-size: var(--text-md);
+display: inline-block;
+margin-block-start: 0;
+font-size: var(--text-base);
 line-height: 1.2;
 font-weight: 760;
-overflow-wrap: anywhere;
+overflow-wrap: normal;
+white-space: nowrap;
+text-align: end;
 }
 
 .note,
@@ -1012,6 +1052,10 @@ color: var(--muted);
 
 .note p + p {
 margin-block-start: var(--space-sm);
+}
+
+.header-copy p + p {
+margin-block-start: 0;
 }
 
 .note code {
@@ -1047,8 +1091,9 @@ vertical-align: middle;
 display: inline-flex;
 align-items: center;
 justify-content: center;
-inline-size: clamp(1rem, .92rem + .3vw, 1.12rem);
-block-size: clamp(1rem, .92rem + .3vw, 1.12rem);
+inline-size: 1.15rem;
+block-size: 1.15rem;
+padding: 0;
 border-radius: 999px;
 border: 1px solid var(--accent-border);
 background: var(--accent-soft);
@@ -1060,12 +1105,17 @@ cursor: help;
 user-select: none;
 }
 
+.tip-icon:hover {
+background: var(--accent-soft);
+}
+
 .tip-icon:focus-visible {
 outline: 2px solid var(--focus);
 outline-offset: 2px;
 }
 
 .tip-content {
+display: none;
 position: absolute;
 z-index: 10;
 inset-inline-end: 0;
@@ -1126,8 +1176,84 @@ outline-offset: 2px;
 
 .tip:hover .tip-content,
 .tip:focus-within .tip-content {
+display: block;
 opacity: 1;
 visibility: visible;
+}
+
+@media (max-width: 58rem) {
+.stats {
+grid-template-columns: 1fr;
+}
+
+.stat {
+grid-template-columns: auto minmax(0, max-content);
+}
+}
+
+@media (max-width: 44rem) {
+body {
+padding: 0.75rem;
+}
+
+main {
+gap: var(--space-sm);
+}
+
+h1 {
+font-size: 1.7rem;
+}
+
+.card {
+padding: var(--space-md);
+}
+
+h2 {
+margin-block-end: var(--space-xs);
+}
+
+.header-content,
+.settings-panel {
+grid-template-columns: 1fr;
+}
+
+.header-content {
+gap: var(--space-md);
+text-align: center;
+}
+
+.top-controls {
+flex-direction: row;
+justify-content: center;
+}
+
+.group-options {
+grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.group-option,
+.stat {
+padding: 0.58rem 0.65rem;
+}
+
+.stat-label {
+font-size: var(--text-xs);
+line-height: 1.25;
+}
+
+.stat strong {
+font-size: var(--text-base);
+}
+}
+
+@media (max-width: 34rem) {
+.group-options {
+grid-template-columns: 1fr;
+}
+
+.stat {
+grid-template-columns: minmax(0, max-content) auto;
+}
 }
 </style>
 </head>
@@ -1136,21 +1262,16 @@ visibility: visible;
 <main>
 <header>
 <div class="header-row">
-<div>
 <h1 data-i18n="title">Exact Entropy Password Generator</h1>
-<p class="note">
-<span data-i18n-html="intro"></span>
-<span class="tip tip-below">
-<span class="tip-icon" tabindex="0" role="button" data-i18n-aria="tipCryptoAria">?</span>
-<span class="tip-content" data-i18n="tipCrypto"></span>
-</span>.
-<span data-i18n="privacyNote"></span>
-</p>
 <p class="header-link-row">
 <a class="github-link" href="https://github.com/macsteini/exact-entropy-password-generator" target="_blank" rel="noopener noreferrer" title="GitHub">GitHub</a>
 </p>
-</div>
 
+<div class="header-content">
+<div class="note header-copy">
+<p data-i18n-html="introPrimary"></p>
+<p data-i18n="introSecondary"></p>
+</div>
 <div class="top-controls">
 <button id="paletteToggle" class="secondary theme-toggle" type="button" aria-pressed="false">◈</button>
 <button id="themeToggle" class="secondary theme-toggle" type="button" aria-pressed="false"></button>
@@ -1164,79 +1285,91 @@ visibility: visible;
 </label>
 </div>
 </div>
+</div>
 </header>
 
-<section class="card">
+<section class="card" aria-label="Password settings" data-i18n-aria="settingsRegionLabel">
 <div class="section-block">
-<div class="grid settings-grid">
-<label>
+<div class="settings-panel">
+<div class="length-control">
+<label class="control-label" for="length">
 <span data-i18n="lengthLabel">Length</span>
+</label>
 <span class="tip">
-<span class="tip-icon" tabindex="0" role="button" data-i18n-aria="tipLengthAria">?</span>
+<button class="tip-icon" type="button" data-i18n-aria="tipLengthAria">?</button>
 <span class="tip-content" data-i18n="tipLength"></span>
 </span>
 <input id="length" type="number" min="1" max="1000" value="64" />
-</label>
-</div>
 </div>
 
-<div class="section-block">
-<h2>
+<fieldset class="group-fieldset">
+<legend class="group-legend">
 <span data-i18n="groupsHeading">Character groups</span>
 <span class="tip">
-<span class="tip-icon" tabindex="0" role="button" data-i18n-aria="tipGroupsAria">?</span>
+<button class="tip-icon" type="button" data-i18n-aria="tipGroupsAria">?</button>
 <span class="tip-content" data-i18n="tipGroups"></span>
 </span>
-</h2>
+</legend>
 
-<div class="grid">
-<label>
-<input class="group" type="checkbox" data-group="lower" checked />
+<div class="group-options">
+<div class="group-option">
+<input id="groupLower" class="group" type="checkbox" data-group="lower" checked />
+<label class="group-label" for="groupLower">
 <span data-i18n-html="lowerLabel"></span>
+</label>
 <span class="tip">
-<span class="tip-icon" tabindex="0" role="button" data-i18n-aria="tipLowerAria">?</span>
+<button class="tip-icon" type="button" data-i18n-aria="tipLowerAria">?</button>
 <span class="tip-content" data-i18n="tipLower"></span>
 </span>
-</label>
+</div>
 
-<label>
-<input class="group" type="checkbox" data-group="upper" checked />
+<div class="group-option">
+<input id="groupUpper" class="group" type="checkbox" data-group="upper" checked />
+<label class="group-label" for="groupUpper">
 <span data-i18n-html="upperLabel"></span>
+</label>
 <span class="tip">
-<span class="tip-icon" tabindex="0" role="button" data-i18n-aria="tipUpperAria">?</span>
+<button class="tip-icon" type="button" data-i18n-aria="tipUpperAria">?</button>
 <span class="tip-content" data-i18n="tipUpper"></span>
 </span>
-</label>
+</div>
 
-<label>
-<input class="group" type="checkbox" data-group="digits" checked />
+<div class="group-option">
+<input id="groupDigits" class="group" type="checkbox" data-group="digits" checked />
+<label class="group-label" for="groupDigits">
 <span data-i18n-html="digitsLabel"></span>
+</label>
 <span class="tip">
-<span class="tip-icon" tabindex="0" role="button" data-i18n-aria="tipDigitsAria">?</span>
+<button class="tip-icon" type="button" data-i18n-aria="tipDigitsAria">?</button>
 <span class="tip-content" data-i18n="tipDigits"></span>
 </span>
-</label>
+</div>
 
-<label>
-<input class="group" type="checkbox" data-group="symbols" checked />
+<div class="group-option">
+<input id="groupSymbols" class="group" type="checkbox" data-group="symbols" checked />
+<label class="group-label" for="groupSymbols">
 <span data-i18n-html="symbolsLabel"></span>
+</label>
 <span class="tip">
-<span class="tip-icon" tabindex="0" role="button" data-i18n-aria="tipSymbolsAria">?</span>
+<button class="tip-icon" type="button" data-i18n-aria="tipSymbolsAria">?</button>
 <span class="tip-content" data-i18n="tipSymbols"></span>
 </span>
-</label>
+</div>
+</div>
+</fieldset>
 </div>
 </div>
 </section>
 
-<section class="card result-card">
+<section class="card result-card" aria-labelledby="detailsHeading">
+<h2 id="detailsHeading" class="sr-only" data-i18n="detailsHeading">Details</h2>
 <div class="section-block stats-block">
-<div class="stats" aria-live="polite">
+<div class="stats">
 <div class="stat">
 <span class="stat-label">
 <span data-i18n="alphabetSizeLabel">Alphabet size</span>
 <span class="tip">
-<span class="tip-icon" tabindex="0" role="button" data-i18n-aria="tipAlphabetAria">?</span>
+<button class="tip-icon" type="button" data-i18n-aria="tipAlphabetAria">?</button>
 <span class="tip-content" data-i18n="tipAlphabet"></span>
 </span>
 </span>
@@ -1247,7 +1380,7 @@ visibility: visible;
 <span class="stat-label">
 <span data-i18n="entropyLabel">Entropy</span>
 <span class="tip">
-<span class="tip-icon" tabindex="0" role="button" data-i18n-aria="tipEntropyAria">?</span>
+<button class="tip-icon" type="button" data-i18n-aria="tipEntropyAria">?</button>
 <span class="tip-content" data-i18n-html="tipEntropy"></span>
 </span>
 </span>
@@ -1258,7 +1391,7 @@ visibility: visible;
 <span class="stat-label">
 <span data-i18n="searchSpaceLabel">Search space</span>
 <span class="tip">
-<span class="tip-icon" tabindex="0" role="button" data-i18n-aria="tipSearchSpaceAria">?</span>
+<button class="tip-icon" type="button" data-i18n-aria="tipSearchSpaceAria">?</button>
 <span class="tip-content" data-i18n="tipSearchSpace"></span>
 </span>
 </span>
@@ -1269,28 +1402,25 @@ visibility: visible;
 
 <div class="section-block password-actions-block">
 <div class="password-box">
+<div class="password-label">
 <label for="password">
 <span data-i18n="passwordLabel">Password</span>
+</label>
 <span class="tip">
-<span class="tip-icon" tabindex="0" role="button" data-i18n-aria="tipPasswordAria">?</span>
+<button class="tip-icon" type="button" data-i18n-aria="tipPasswordAria">?</button>
 <span class="tip-content" data-i18n="tipPassword"></span>
 </span>
-</label>
+</div>
 <input id="password" type="text" readonly spellcheck="false" autocomplete="off" />
 </div>
 
 <div class="actions">
 <button id="generate" type="button" data-i18n="generateButton">Generate password</button>
-<button id="copy" class="secondary" type="button" data-i18n="copyButton">Copy</button>
+<button id="copy" class="secondary" type="button" data-i18n="copyButton" aria-live="polite">Copy</button>
 </div>
 
 <p id="error" class="error"></p>
 </div>
-</section>
-
-<section class="card note">
-<p data-i18n-html="calculationModel"></p>
-<p data-i18n="entropyWarning"></p>
 </section>
 </main>
 
@@ -1312,11 +1442,11 @@ languageName: "English (US)",
 languageSelectAria: "Choose language",
 randomColorLayout: "Random color layout",
 title: "Exact Entropy Password Generator",
-intro: "Generates passwords locally in the browser with a secure random generator",
-privacyNote: "This page contains no network code; password, settings, and entropy values are not sent to a server.",
+introPrimary: "Creates passwords locally in your browser with <code>crypto.getRandomValues()</code>. Passwords, settings and entropy values are not sent anywhere.",
+introSecondary: "Entropy is calculated from the current length and character groups; every selected group appears at least once. The value applies only while you use the generated password unchanged.",
 switchToLight: "Switch to light mode",
 switchToDark: "Switch to dark mode",
-settingsHeading: "Settings",
+settingsRegionLabel: "Password settings",
 lengthLabel: "Length",
 groupsHeading: "Character groups",
 lowerLabel: "Lowercase letters <code>a-z</code>",
@@ -1331,8 +1461,6 @@ detailsHeading: "Details",
 alphabetSizeLabel: "Alphabet size",
 entropyLabel: "Entropy",
 searchSpaceLabel: "Search space",
-calculationModel: "The displayed entropy is based on how many different passwords this generator can create with the current settings. Every selected character group is included at least once.",
-entropyWarning: "The entropy value is only correct while you use the generated password unchanged. If you edit it or choose a password by following a pattern, the displayed value no longer applies.",
 errorCrypto: "This browser does not provide crypto.getRandomValues().",
 errorRandomLimit: "Invalid upper bound for random number.",
 errorLength: "Length must be an integer between 1 and 1000.",
@@ -1340,8 +1468,6 @@ errorGroup: "Select at least one character group.",
 errorTooShort: "Length is too short to contain each selected group at least once.",
 errorAttempts: "Too many rejected candidates. Increase the length or disable requiring all groups.",
 errorClipboard: "Could not copy the password.",
-tipCryptoAria: "Explanation of the secure random generator",
-tipCrypto: "Uses the browser’s built-in secure random number generator. The password is created on this device and is not sent to a server.",
 tipLengthAria: "Explanation of password length",
 tipLength: "Number of characters in the password. Longer random passwords usually have many more possible combinations.",
 tipGroupsAria: "Explanation of character groups",
@@ -1371,17 +1497,17 @@ languageName: "Deutsch (Deutschland)",
 languageSelectAria: "Sprache auswählen",
 randomColorLayout: "Zufälliges Farblayout",
 title: "Generator für Passwörter mit exakter Entropie",
-intro: "Erzeugt Passwörter lokal im Browser mit einem sicheren Zufallsgenerator",
-privacyNote: "Diese Seite enthält keinen Netzwerkcode; Passwort, Einstellungen und Entropiewerte werden nicht an einen Server gesendet.",
+introPrimary: "Erzeugt Passwörter lokal im Browser mit <code>crypto.getRandomValues()</code>. Passwort, Einstellungen und Entropiewerte werden nirgendwohin übertragen.",
+introSecondary: "Die Entropie wird aus aktueller Länge und Zeichengruppen berechnet; jede ausgewählte Gruppe kommt mindestens einmal vor. Der Wert gilt nur, solange du das generierte Passwort unverändert nutzt.",
 switchToLight: "Hellmodus aktivieren",
 switchToDark: "Darkmode aktivieren",
-settingsHeading: "Einstellungen",
+settingsRegionLabel: "Passworteinstellungen",
 lengthLabel: "Länge",
 groupsHeading: "Zeichengruppen",
 lowerLabel: "Kleinbuchstaben <code>a-z</code>",
 upperLabel: "Großbuchstaben <code>A-Z</code>",
 digitsLabel: "Zahlen <code>0-9</code>",
-symbolsLabel: "Sonderzeichen ASCII",
+symbolsLabel: "ASCII-Sonderzeichen",
 generateButton: "Passwort generieren",
 copyButton: "Kopieren",
 copiedButton: "Kopiert",
@@ -1390,8 +1516,6 @@ detailsHeading: "Details",
 alphabetSizeLabel: "Alphabetgröße",
 entropyLabel: "Entropie",
 searchSpaceLabel: "Suchraum",
-calculationModel: "Die angezeigte Entropie basiert darauf, wie viele verschiedene Passwörter dieser Generator mit den aktuellen Einstellungen erzeugen kann. Jede ausgewählte Zeichengruppe ist mindestens einmal enthalten.",
-entropyWarning: "Der Entropiewert ist nur korrekt, solange du das erzeugte Passwort unverändert verwendest. Wenn du es bearbeitest oder ein Passwort nach einem Muster wählst, gilt der angezeigte Wert nicht mehr.",
 errorCrypto: "Dieser Browser stellt crypto.getRandomValues() nicht bereit.",
 errorRandomLimit: "Ungültige Obergrenze für Zufallszahl.",
 errorLength: "Die Länge muss eine ganze Zahl zwischen 1 und 1000 sein.",
@@ -1399,8 +1523,6 @@ errorGroup: "Wähle mindestens eine Zeichengruppe aus.",
 errorTooShort: "Die Länge ist zu kurz, um jede ausgewählte Gruppe mindestens einmal zu enthalten.",
 errorAttempts: "Zu viele verworfene Kandidaten. Erhöhe die Länge oder deaktiviere das Erzwingen aller Gruppen.",
 errorClipboard: "Das Passwort konnte nicht kopiert werden.",
-tipCryptoAria: "Erklärung zum sicheren Zufallsgenerator",
-tipCrypto: "Verwendet den eingebauten sicheren Zufallsgenerator des Browsers. Das Passwort wird auf diesem Gerät erzeugt und nicht an einen Server gesendet.",
 tipLengthAria: "Erklärung zur Passwortlänge",
 tipLength: "Anzahl der Zeichen im Passwort. Längere zufällige Passwörter haben normalerweise sehr viel mehr mögliche Kombinationen.",
 tipGroupsAria: "Erklärung zu Zeichengruppen",
@@ -1444,7 +1566,6 @@ symbols: charsFromRanges([[0x21, 0x2f], [0x3a, 0x40], [0x5b, 0x60], [0x7b, 0x7e]
 
 const lengthInput = document.getElementById("length");
 const passwordOutput = document.getElementById("password");
-const passwordBox = passwordOutput.closest(".password-box");
 const errorOutput = document.getElementById("error");
 const alphabetSizeOutput = document.getElementById("alphabetSize");
 const entropyBitsOutput = document.getElementById("entropyBits");
@@ -1457,7 +1578,6 @@ const themeMedia = window.matchMedia("(prefers-color-scheme: dark)");
 
 let themeSource = "auto";
 let copyResetTimer = 0;
-let copyStatusTimer = 0;
 
 translateUI();
 applyStoredOrDefaultPalette();
@@ -1482,18 +1602,12 @@ passwordOutput.setSelectionRange(0, 0);
 }
 
 copyButton.textContent = t("copiedButton");
-passwordBox?.classList.add("is-copied");
 
 clearTimeout(copyResetTimer);
-clearTimeout(copyStatusTimer);
 
 copyResetTimer = window.setTimeout(() => {
 copyButton.textContent = t("copyButton");
 }, 1200);
-
-copyStatusTimer = window.setTimeout(() => {
-passwordBox?.classList.remove("is-copied");
-}, 900);
 } catch {
 errorOutput.textContent = t("errorClipboard");
 }
@@ -1585,7 +1699,6 @@ function translateUI() {
 document.documentElement.lang = locale;
 document.title = t("documentTitle");
 languageSelect.value = locale;
-passwordBox?.setAttribute("data-copy-status", t("copiedButton"));
 
 document.querySelectorAll("[data-i18n]").forEach(element => {
 element.textContent = t(element.dataset.i18n);
@@ -1679,7 +1792,6 @@ function applyTheme(theme) {
 const safeTheme = theme === "dark" ? "dark" : "light";
 
 document.documentElement.dataset.theme = safeTheme;
-document.documentElement.style.colorScheme = safeTheme;
 
 const switchesToLight = safeTheme === "dark";
 
@@ -1830,6 +1942,11 @@ maximumFractionDigits: 2
 })} Bit`;
 }
 
+function updatePasswordSize(value) {
+const length = Math.max(1, value.length);
+passwordOutput.size = Math.min(length, 128);
+}
+
 function renderDetailsOnly() {
 try {
 const length = Number(lengthInput.value);
@@ -1850,7 +1967,6 @@ searchSpaceOutput.textContent = formatSearchSpace(bits);
 function generateAndRender() {
 errorOutput.textContent = "";
 copyButton.textContent = t("copyButton");
-passwordBox?.classList.remove("is-copied");
 
 try {
 if (!window.crypto || !crypto.getRandomValues) {
@@ -1876,12 +1992,14 @@ const password = generatePassword(length, groups, alphabet);
 const bits = entropyBits(length, groups);
 
 passwordOutput.value = password;
+updatePasswordSize(password);
 alphabetSizeOutput.textContent = numberFormatter.format(alphabet.length);
 entropyBitsOutput.textContent = formatBits(bits);
 searchSpaceOutput.textContent = formatSearchSpace(bits);
 } catch (err) {
 errorOutput.textContent = err instanceof Error ? err.message : String(err);
 passwordOutput.value = "";
+updatePasswordSize("");
 alphabetSizeOutput.textContent = "-";
 entropyBitsOutput.textContent = "-";
 searchSpaceOutput.textContent = "-";
