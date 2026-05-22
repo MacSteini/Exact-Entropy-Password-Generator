@@ -1,86 +1,131 @@
 # Exact Entropy Password Generator
 
-A local, browser-based password generator that creates random passwords and displays the calculated entropy for the selected generation rules.
+Generate random passwords in your browser and see the exact entropy for the settings you chose.
 
-## What it does
+The tool is a single `index.html` file. You can open it on your own computer or host it as a static page on a server.
 
-- Generates passwords locally in the browser
-- Uses `crypto.getRandomValues()` for cryptographically suitable randomness
-- Lets you choose:
-  - password length
-  - lowercase letters
-  - uppercase letters
-  - digits
-  - ASCII symbols
-  - whether every selected character group must appear at least once
-- Shows:
-  - alphabet size
-  - entropy in bits
-  - estimated search space
-  - calculation model
+## Purpose
 
-No password, setting, or entropy value is sent to a server.
+Use this tool when you want a random password and want to know how large the possible password space is.
 
-## How to use
+It lets you choose the password length and the character groups:
 
-Download or clone the repository, then open the HTML file in a modern browser.
+- lowercase letters
+- uppercase letters
+- digits
+- printable ASCII symbols, with spaces excluded
 
-No build step, server, package manager, or internet connection is required.
+Every selected character group appears at least once in each generated password.
 
-## Entropy model
+## How to use it
 
-The entropy value is calculated from the generator rules, not guessed from the final password.
+### On your own computer
 
-Without required character groups:
+Download the repository as a ZIP file from GitHub, unzip it, and open `index.html` in a modern browser.
+
+You do not need a build step, package manager, server, account, or internet connection.
+
+### On a server
+
+Upload `index.html` as a static file and open it through a browser.
+
+The page does not need server-side code. If you publish it for other people, serve it over HTTPS.
+
+## Privacy
+
+Password generation happens locally in the browser with `crypto.getRandomValues()`.
+
+The password, settings, entropy value and search space do not get sent anywhere by this tool.
+
+## Features
+
+- length from 1 to 1000 characters
+- lowercase, uppercase, digit and printable ASCII-symbol character groups, with spaces excluded
+- at least one character from every selected group
+- alphabet size, entropy and search space shown in the details panel and updated whenever settings change
+- click the password field or the copy control to copy the password
+- light and dark modes
+- ten colour palettes
+- English (US/UK), German, French, Spanish, Italian and Dutch interface text
+
+## Understanding the numbers
+
+**Alphabet size** is the number of different characters the generator may use.
+
+**Entropy** measures the size of the random choice in bits. More bits means many more possible passwords.
+
+**Search space** is the number of different passwords the current settings can produce.
+
+The entropy guide in the page uses these practical ranges:
+
+- `<64 bits`: low; not suitable for important accounts
+- `64-79 bits`: limited; only for less critical or short-term use
+- `80-111 bits`: strong for many everyday uses
+- `112-127 bits`: stronger still
+- `128 bits or more`: strong enough for normal password use
+
+These ranges are a guide, not a guarantee. Password reuse, phishing, account recovery and data leaks can still defeat a strong password.
+
+## Technical details: how the tool calculates entropy
+
+The entropy value comes from the generator rules, not from a guess about the visible password.
+
+Let:
+
+- `L` be the password length
+- `A` be the alphabet size
+- `H` be the entropy in bits
+
+If every position could use any character from the alphabet without extra rules, the formula would be:
 
 ```text
-H = length × log2(alphabet size)
+H = L × log2(A)
 ```
 
-When every selected character group must appear at least once, the valid password space is smaller. In that case, the app counts the valid password space using inclusion-exclusion and calculates:
+This tool also requires every selected character group to appear at least once. That removes passwords that miss a selected group, so the valid search space is smaller than `A^L`.
+
+For selected group sizes `g1, g2, ..., gk`, with `A = g1 + g2 + ... + gk`, the tool counts valid passwords with inclusion-exclusion:
 
 ```text
-H = log2(number of valid passwords)
+valid passwords =
+  sum over all group subsets S of
+  (-1)^size(S) × (A - sum of group sizes in S)^L
+
+H = log2(valid passwords)
 ```
+
+The displayed search space is the same valid password count, shown directly for smaller values or as an approximate power of ten for large values.
 
 ```mermaid
 flowchart TD
-A[Choose length and character groups] --> B[Build alphabet]
-B --> C[Generate random password locally]
-C --> D{Require every selected group?}
-D -- No --> E[Entropy = length × log2 alphabet size]
-D -- Yes --> F[Entropy = log2 valid password count]
-E --> G[Show password and details]
-F --> G
+    A[Choose length and character groups] --> B[Build the alphabet]
+    B --> C[Count passwords that include every selected group]
+    C --> D[Calculate entropy: H = log2(valid passwords)]
+    D --> E[Show alphabet size, entropy and search space]
+    B --> F[Generate a random password locally]
+    F --> G[Reject candidates that miss a selected group]
+    G --> H[Show the generated password]
 ```
 
-## Entropy guide
+## Why this only applies to generated passwords
 
-The entropy tooltip gives a rough orientation:
+The entropy value describes the random process used by this generator.
 
-- `<64 bit`: low
-- `64–79 bit`: limited
-- `80–111 bit`: solid for many practical attacks
-- `112–127 bit`: high
-- `128–191 bit`: very high
-- `192–255 bit`: extremely high
-- `≥256 bit`: beyond usual symmetric security levels; usually limited by other factors
+If a person chooses a password, edits the generated password, follows a pattern, or reuses part of an old password, the calculation no longer describes how hard that password is to guess.
 
-These ranges are a practical guide, not a certification.
+That is why the password field does not accept manual edits.
 
-## Security notes
+## Safe use notes
 
-This tool only calculates entropy for passwords it generates.
-
-If you manually change a generated password, the displayed entropy no longer applies.
-
-The password field is read-only for this reason.
-
-Use a password manager to store generated passwords.
+- Generate a fresh password for each account.
+- Store generated passwords in a password manager.
+- Do not send passwords through chat, email, screenshots, or shared documents.
+- Prefer multi-factor authentication for important accounts.
+- Treat the entropy value as a measure of random guessing resistance, not as a full security rating.
 
 ## Browser support
 
-A modern browser with support for `crypto.getRandomValues()` is required.
+Use a modern browser with support for `crypto.getRandomValues()`.
 
 ## Contributing
 
@@ -88,4 +133,4 @@ A modern browser with support for `crypto.getRandomValues()` is required.
 
 ## Licence
 
-This project uses the [MIT Licence](LICENCE "MIT Licence"). You may use, change, and distribute it in compliance with the licence terms.
+This project uses the [MIT Licence](LICENCE "MIT Licence"). You may use, change and distribute it under the licence terms.
