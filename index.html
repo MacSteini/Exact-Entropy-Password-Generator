@@ -10,7 +10,7 @@
 
 <script>
 (() => {
-const supported = ["en-GB", "en-US", "de-DE"];
+const supported = ["en-GB", "en-US", "de-DE", "fr-FR", "es-ES", "it-IT", "nl-NL"];
 const fallback = "en-US";
 const palettes = ["teal", "indigo", "rose", "amber", "forest", "ocean", "violet", "copper", "graphite", "candy"];
 const paletteStorageKey = "passwordGeneratorPaletteOverride";
@@ -36,6 +36,10 @@ const locale = canonicalLocale(raw);
 const base = locale.split("-")[0];
 if (base === "de") return "de-DE";
 if (base === "en") return "en-US";
+if (base === "fr") return "fr-FR";
+if (base === "es") return "es-ES";
+if (base === "it") return "it-IT";
+if (base === "nl") return "nl-NL";
 }
 
 return fallback;
@@ -1078,7 +1082,7 @@ gap: var(--space-sm);
 
 .stat {
 display: grid;
-grid-template-columns: auto minmax(0, max-content);
+grid-template-columns: minmax(0, 1fr) auto;
 align-items: baseline;
 gap: 0.4rem;
 border: var(--stroke) solid var(--border);
@@ -1095,7 +1099,13 @@ align-items: center;
 gap: var(--space-2xs);
 min-inline-size: 0;
 font-size: var(--text-sm);
-white-space: nowrap;
+overflow-wrap: break-word;
+white-space: normal;
+}
+
+.stat-label > [data-i18n] {
+min-inline-size: 0;
+overflow-wrap: anywhere;
 }
 
 .stat strong {
@@ -1251,7 +1261,7 @@ grid-template-columns: 1fr;
 }
 
 .stat {
-grid-template-columns: auto minmax(0, max-content);
+grid-template-columns: minmax(0, 1fr) auto;
 }
 }
 
@@ -1370,7 +1380,7 @@ grid-template-columns: 1fr;
 }
 
 .stat {
-grid-template-columns: minmax(0, max-content) auto;
+grid-template-columns: minmax(0, 1fr) auto;
 }
 }
 
@@ -1420,6 +1430,10 @@ transition: none;
 <option value="en-US">🇺🇸</option>
 <option value="en-GB">🇬🇧</option>
 <option value="de-DE">🇩🇪</option>
+<option value="fr-FR">🇫🇷</option>
+<option value="es-ES">🇪🇸</option>
+<option value="it-IT">🇮🇹</option>
+<option value="nl-NL">🇳🇱</option>
 </select>
 </label>
 </div>
@@ -1568,7 +1582,7 @@ transition: none;
 <script>
 "use strict";
 
-const SUPPORTED_LOCALES = ["en-GB", "en-US", "de-DE"];
+const SUPPORTED_LOCALES = ["en-GB", "en-US", "de-DE", "fr-FR", "es-ES", "it-IT", "nl-NL"];
 const DEFAULT_LOCALE = "en-US";
 const COLOR_PALETTES = ["teal", "indigo", "rose", "amber", "forest", "ocean", "violet", "copper", "graphite", "candy"];
 const PALETTE_SYMBOLS = {
@@ -1628,6 +1642,7 @@ detailsHeading: "Details",
 alphabetSizeLabel: "Alphabet size",
 entropyLabel: "Entropy",
 searchSpaceLabel: "Search space",
+bitUnit: "bits",
 errorCrypto: "This browser does not provide crypto.getRandomValues().",
 errorRandomLimit: "Invalid upper bound for random number.",
 errorLength: "Length must be an integer between 1 and 1000.",
@@ -1698,6 +1713,7 @@ detailsHeading: "Details",
 alphabetSizeLabel: "Alphabetgröße",
 entropyLabel: "Entropie",
 searchSpaceLabel: "Suchraum",
+bitUnit: "Bit",
 errorCrypto: "Dieser Browser stellt crypto.getRandomValues() nicht bereit.",
 errorRandomLimit: "Ungültige Obergrenze für Zufallszahl.",
 errorLength: "Die Länge muss eine ganze Zahl zwischen 1 und 1000 sein.",
@@ -1726,6 +1742,290 @@ tipEntropyAria: "Erklärung zur Entropie",
 tipEntropy: "Zeigt, wie schwer das Passwort durch Ausprobieren aller Möglichkeiten zu erraten ist. Mehr Bit bedeutet sehr viel mehr mögliche Passwörter.<ul><li>&lt;64 Bit: niedrig; nicht für wichtige Zugänge geeignet.</li><li>64–79 Bit: begrenzt; nur für weniger kritische oder kurzlebige Zwecke.</li><li>80–111 Bit: stark für viele alltägliche Zwecke.</li><li>112–127 Bit: sehr stark.</li><li>128 Bit oder mehr: extrem stark für normale Passwortnutzung.</li></ul>",
 tipSearchSpaceAria: "Erklärung zum Suchraum",
 tipSearchSpace: "Die Anzahl verschiedener Passwörter, die mit den aktuellen Einstellungen entstehen könnten. Größere Zahlen sind schwerer durch Ausprobieren aller Möglichkeiten zu erraten.",
+
+},
+
+"fr-FR": {
+documentTitle: "Générateur de mots de passe à entropie exacte",
+languageName: "Français (France)",
+languageSelectAria: "Choisir la langue",
+githubLinkAria: "Ouvrir le dépôt GitHub",
+randomColorLayout: "Palette aléatoire",
+paletteStatus: "Palette aléatoire. Palette actuelle : {palette}.",
+paletteTeal: "Turquoise",
+paletteIndigo: "Indigo",
+paletteRose: "Rose",
+paletteAmber: "Ambre",
+paletteForest: "Forêt",
+paletteOcean: "Océan",
+paletteViolet: "Violet",
+paletteCopper: "Cuivre",
+paletteGraphite: "Graphite",
+paletteCandy: "Bonbon",
+title: "Générateur de mots de passe à entropie exacte",
+introPrimary: "Génère des mots de passe localement dans le navigateur avec <code>crypto.getRandomValues()</code>. Le mot de passe, les réglages et les valeurs d’entropie ne sont envoyés nulle part.",
+introSecondary: "L’entropie est calculée à partir de la longueur actuelle et des groupes de caractères ; chaque groupe sélectionné apparaît au moins une fois. La valeur reste valable uniquement si le mot de passe généré est utilisé tel quel.",
+showHeaderDetails: "Afficher les détails de l’en-tête",
+hideHeaderDetails: "Masquer les détails de l’en-tête",
+switchToLight: "Activer le mode clair",
+switchToDark: "Activer le mode sombre",
+settingsRegionLabel: "Réglages du mot de passe",
+lengthLabel: "Longueur",
+groupsHeading: "Groupes de caractères",
+lowerLabel: "Minuscules <code>a-z</code>",
+upperLabel: "Majuscules <code>A-Z</code>",
+digitsLabel: "Chiffres <code>0-9</code>",
+symbolsLabel: "Symboles ASCII",
+generateButton: "Générer le mot de passe",
+copyButton: "Copier",
+copiedButton: "Copié",
+passwordLabel: "Mot de passe",
+detailsHeading: "Détails",
+alphabetSizeLabel: "Taille de l’alphabet",
+entropyLabel: "Entropie",
+searchSpaceLabel: "Espace de recherche",
+bitUnit: "bits",
+errorCrypto: "Ce navigateur ne fournit pas crypto.getRandomValues().",
+errorRandomLimit: "Limite supérieure invalide pour le tirage aléatoire.",
+errorLength: "La longueur doit être un entier compris entre 1 et 1000.",
+errorGroup: "Sélectionnez au moins un groupe de caractères.",
+errorTooShort: "La longueur est trop courte pour contenir au moins une fois chaque groupe sélectionné.",
+errorAttempts: "Trop de candidats rejetés. Réessayez, augmentez la longueur ou sélectionnez moins de groupes.",
+errorClipboard: "Impossible de copier le mot de passe.",
+passwordCopyHint: "Cliquez dans le champ du mot de passe ou utilisez le bouton Copier pour copier le mot de passe.",
+tipLengthAria: "Explication de la longueur du mot de passe",
+tipLength: "Nombre de caractères du mot de passe. Les mots de passe aléatoires plus longs offrent généralement beaucoup plus de combinaisons possibles.",
+tipGroupsAria: "Explication des groupes de caractères",
+tipGroups: "Les groupes sélectionnés définissent les caractères pouvant apparaître dans le mot de passe. Chaque groupe sélectionné apparaît au moins une fois.",
+tipLowerAria: "Explication des minuscules",
+tipLower: "Ajoute les 26 lettres de a à z à l’alphabet.",
+tipUpperAria: "Explication des majuscules",
+tipUpper: "Ajoute les 26 lettres de A à Z à l’alphabet.",
+tipDigitsAria: "Explication des chiffres",
+tipDigits: "Ajoute les dix chiffres de 0 à 9 à l’alphabet.",
+tipSymbolsAria: "Explication des symboles",
+tipSymbols: "Ajoute les symboles ASCII imprimables, par exemple !, ?, #, %, &, + et /. Les espaces ne sont pas inclus.",
+tipPasswordAria: "Explication du champ du mot de passe",
+tipPassword: "Le champ est volontairement en lecture seule. Si le mot de passe est modifié manuellement, l’entropie calculée ne correspond plus exactement au générateur.",
+tipAlphabetAria: "Explication de la taille de l’alphabet",
+tipAlphabet: "Nombre de caractères différents que le générateur peut utiliser. Avec tous les groupes par défaut, il y a 94 caractères.",
+tipEntropyAria: "Explication de l’entropie",
+tipEntropy: "Indique à quel point le mot de passe est difficile à deviner en essayant toutes les possibilités. Plus il y a de bits, plus le nombre de mots de passe possibles est élevé.<ul><li>&lt;64 bits : faible ; ne convient pas aux comptes importants.</li><li>64–79 bits : limité ; seulement pour un usage peu critique ou temporaire.</li><li>80–111 bits : robuste pour de nombreux usages courants.</li><li>112–127 bits : très robuste.</li><li>128 bits ou plus : extrêmement robuste pour un usage normal de mots de passe.</li></ul>",
+tipSearchSpaceAria: "Explication de l’espace de recherche",
+tipSearchSpace: "Nombre de mots de passe différents pouvant être créés avec les réglages actuels. Plus ce nombre est grand, plus il est difficile de deviner le mot de passe en essayant toutes les possibilités.",
+
+},
+
+"es-ES": {
+documentTitle: "Generador de contraseñas con entropía exacta",
+languageName: "Español (España)",
+languageSelectAria: "Elegir idioma",
+githubLinkAria: "Abrir el repositorio de GitHub",
+randomColorLayout: "Paleta aleatoria",
+paletteStatus: "Paleta aleatoria. Paleta actual: {palette}.",
+paletteTeal: "Turquesa",
+paletteIndigo: "Índigo",
+paletteRose: "Rosa",
+paletteAmber: "Ámbar",
+paletteForest: "Bosque",
+paletteOcean: "Océano",
+paletteViolet: "Violeta",
+paletteCopper: "Cobre",
+paletteGraphite: "Grafito",
+paletteCandy: "Caramelo",
+title: "Generador de contraseñas con entropía exacta",
+introPrimary: "Genera contraseñas localmente en el navegador con <code>crypto.getRandomValues()</code>. La contraseña, la configuración y los valores de entropía no se envían a ningún sitio.",
+introSecondary: "La entropía se calcula a partir de la longitud actual y de los grupos de caracteres; cada grupo seleccionado aparece al menos una vez. El valor solo es válido mientras uses la contraseña generada sin modificarla.",
+showHeaderDetails: "Mostrar detalles del encabezado",
+hideHeaderDetails: "Ocultar detalles del encabezado",
+switchToLight: "Activar modo claro",
+switchToDark: "Activar modo oscuro",
+settingsRegionLabel: "Configuración de la contraseña",
+lengthLabel: "Longitud",
+groupsHeading: "Grupos de caracteres",
+lowerLabel: "Minúsculas <code>a-z</code>",
+upperLabel: "Mayúsculas <code>A-Z</code>",
+digitsLabel: "Dígitos <code>0-9</code>",
+symbolsLabel: "Símbolos ASCII",
+generateButton: "Generar contraseña",
+copyButton: "Copiar",
+copiedButton: "Copiado",
+passwordLabel: "Contraseña",
+detailsHeading: "Detalles",
+alphabetSizeLabel: "Tamaño del alfabeto",
+entropyLabel: "Entropía",
+searchSpaceLabel: "Espacio de búsqueda",
+bitUnit: "bits",
+errorCrypto: "Este navegador no proporciona crypto.getRandomValues().",
+errorRandomLimit: "Límite superior no válido para el número aleatorio.",
+errorLength: "La longitud debe ser un entero entre 1 y 1000.",
+errorGroup: "Selecciona al menos un grupo de caracteres.",
+errorTooShort: "La longitud es demasiado corta para contener cada grupo seleccionado al menos una vez.",
+errorAttempts: "Se han rechazado demasiados candidatos. Inténtalo de nuevo, aumenta la longitud o selecciona menos grupos.",
+errorClipboard: "No se ha podido copiar la contraseña.",
+passwordCopyHint: "Haz clic en el campo de contraseña o usa el botón Copiar para copiar la contraseña.",
+tipLengthAria: "Explicación de la longitud de la contraseña",
+tipLength: "Número de caracteres de la contraseña. Las contraseñas aleatorias más largas suelen tener muchas más combinaciones posibles.",
+tipGroupsAria: "Explicación de los grupos de caracteres",
+tipGroups: "Los grupos seleccionados definen qué caracteres pueden aparecer en la contraseña. Cada grupo seleccionado aparece al menos una vez.",
+tipLowerAria: "Explicación de las minúsculas",
+tipLower: "Añade al alfabeto los 26 caracteres de la a a la z.",
+tipUpperAria: "Explicación de las mayúsculas",
+tipUpper: "Añade al alfabeto los 26 caracteres de la A a la Z.",
+tipDigitsAria: "Explicación de los dígitos",
+tipDigits: "Añade al alfabeto los diez dígitos del 0 al 9.",
+tipSymbolsAria: "Explicación de los símbolos",
+tipSymbols: "Añade símbolos ASCII imprimibles, por ejemplo !, ?, #, %, &, + y /. No se incluyen espacios.",
+tipPasswordAria: "Explicación del campo de contraseña",
+tipPassword: "El campo es deliberadamente de solo lectura. Si modificas la contraseña manualmente, la entropía calculada ya no coincidirá exactamente con el generador.",
+tipAlphabetAria: "Explicación del tamaño del alfabeto",
+tipAlphabet: "Número de caracteres distintos que puede usar el generador. Con todos los grupos predeterminados son 94 caracteres.",
+tipEntropyAria: "Explicación de la entropía",
+tipEntropy: "Muestra lo difícil que es adivinar la contraseña probando todas las posibilidades. Cuantos más bits, muchas más contraseñas posibles.<ul><li>&lt;64 bits: baja; no apta para cuentas importantes.</li><li>64–79 bits: limitada; solo para usos poco críticos o temporales.</li><li>80–111 bits: fuerte para muchos usos cotidianos.</li><li>112–127 bits: muy fuerte.</li><li>128 bits o más: extremadamente fuerte para un uso normal de contraseñas.</li></ul>",
+tipSearchSpaceAria: "Explicación del espacio de búsqueda",
+tipSearchSpace: "Número de contraseñas distintas que podrían crearse con la configuración actual. Los números más grandes son más difíciles de adivinar probando todas las posibilidades.",
+
+},
+
+"it-IT": {
+documentTitle: "Generatore di password a entropia esatta",
+languageName: "Italiano (Italia)",
+languageSelectAria: "Scegli la lingua",
+githubLinkAria: "Apri il repository GitHub",
+randomColorLayout: "Palette casuale",
+paletteStatus: "Palette casuale. Palette attuale: {palette}.",
+paletteTeal: "Turchese",
+paletteIndigo: "Indaco",
+paletteRose: "Rosa",
+paletteAmber: "Ambra",
+paletteForest: "Foresta",
+paletteOcean: "Oceano",
+paletteViolet: "Viola",
+paletteCopper: "Rame",
+paletteGraphite: "Grafite",
+paletteCandy: "Caramella",
+title: "Generatore di password a entropia esatta",
+introPrimary: "Genera password localmente nel browser con <code>crypto.getRandomValues()</code>. Password, impostazioni e valori di entropia non vengono inviati da nessuna parte.",
+introSecondary: "L’entropia viene calcolata in base alla lunghezza attuale e ai gruppi di caratteri; ogni gruppo selezionato compare almeno una volta. Il valore resta valido solo se usi la password generata senza modificarla.",
+showHeaderDetails: "Mostra i dettagli dell’intestazione",
+hideHeaderDetails: "Nascondi i dettagli dell’intestazione",
+switchToLight: "Attiva modalità chiara",
+switchToDark: "Attiva modalità scura",
+settingsRegionLabel: "Impostazioni della password",
+lengthLabel: "Lunghezza",
+groupsHeading: "Gruppi di caratteri",
+lowerLabel: "Minuscole <code>a-z</code>",
+upperLabel: "Maiuscole <code>A-Z</code>",
+digitsLabel: "Cifre <code>0-9</code>",
+symbolsLabel: "Simboli ASCII",
+generateButton: "Genera password",
+copyButton: "Copia",
+copiedButton: "Copiato",
+passwordLabel: "Password",
+detailsHeading: "Dettagli",
+alphabetSizeLabel: "Dimensione dell’alfabeto",
+entropyLabel: "Entropia",
+searchSpaceLabel: "Spazio di ricerca",
+bitUnit: "bit",
+errorCrypto: "Questo browser non fornisce crypto.getRandomValues().",
+errorRandomLimit: "Limite superiore non valido per il numero casuale.",
+errorLength: "La lunghezza deve essere un numero intero tra 1 e 1000.",
+errorGroup: "Seleziona almeno un gruppo di caratteri.",
+errorTooShort: "La lunghezza è troppo breve per contenere almeno una volta ogni gruppo selezionato.",
+errorAttempts: "Troppi candidati scartati. Riprova, aumenta la lunghezza o seleziona meno gruppi.",
+errorClipboard: "Impossibile copiare la password.",
+passwordCopyHint: "Fai clic nel campo della password o usa il pulsante Copia per copiare la password.",
+tipLengthAria: "Spiegazione della lunghezza della password",
+tipLength: "Numero di caratteri della password. Le password casuali più lunghe di solito hanno molte più combinazioni possibili.",
+tipGroupsAria: "Spiegazione dei gruppi di caratteri",
+tipGroups: "I gruppi selezionati definiscono quali caratteri possono comparire nella password. Ogni gruppo selezionato compare almeno una volta.",
+tipLowerAria: "Spiegazione delle minuscole",
+tipLower: "Aggiunge all’alfabeto i 26 caratteri dalla a alla z.",
+tipUpperAria: "Spiegazione delle maiuscole",
+tipUpper: "Aggiunge all’alfabeto i 26 caratteri dalla A alla Z.",
+tipDigitsAria: "Spiegazione delle cifre",
+tipDigits: "Aggiunge all’alfabeto le dieci cifre da 0 a 9.",
+tipSymbolsAria: "Spiegazione dei simboli",
+tipSymbols: "Aggiunge simboli ASCII stampabili, ad esempio !, ?, #, %, &, + e /. Gli spazi non sono inclusi.",
+tipPasswordAria: "Spiegazione del campo password",
+tipPassword: "Il campo è intenzionalmente di sola lettura. Se modifichi manualmente la password, l’entropia calcolata non corrisponderà più esattamente al generatore.",
+tipAlphabetAria: "Spiegazione della dimensione dell’alfabeto",
+tipAlphabet: "Numero di caratteri diversi che il generatore può usare. Con tutti i gruppi predefiniti sono 94 caratteri.",
+tipEntropyAria: "Spiegazione dell’entropia",
+tipEntropy: "Indica quanto è difficile indovinare la password provando tutte le possibilità. Più bit significano molte più password possibili.<ul><li>&lt;64 bit: bassa; non adatta ad account importanti.</li><li>64–79 bit: limitata; solo per usi poco critici o temporanei.</li><li>80–111 bit: forte per molti usi quotidiani.</li><li>112–127 bit: molto forte.</li><li>128 bit o più: estremamente forte per un uso normale delle password.</li></ul>",
+tipSearchSpaceAria: "Spiegazione dello spazio di ricerca",
+tipSearchSpace: "Numero di password diverse che potrebbero essere create con le impostazioni attuali. Numeri più grandi sono più difficili da indovinare provando tutte le possibilità.",
+
+},
+
+"nl-NL": {
+documentTitle: "Wachtwoordgenerator met exacte entropie",
+languageName: "Nederlands (Nederland)",
+languageSelectAria: "Taal kiezen",
+githubLinkAria: "GitHub-repository openen",
+randomColorLayout: "Willekeurig kleurenpalet",
+paletteStatus: "Willekeurig kleurenpalet. Huidig palet: {palette}.",
+paletteTeal: "Turkoois",
+paletteIndigo: "Indigo",
+paletteRose: "Roze",
+paletteAmber: "Amber",
+paletteForest: "Bos",
+paletteOcean: "Oceaan",
+paletteViolet: "Violet",
+paletteCopper: "Koper",
+paletteGraphite: "Grafiet",
+paletteCandy: "Snoep",
+title: "Wachtwoordgenerator met exacte entropie",
+introPrimary: "Genereert wachtwoorden lokaal in je browser met <code>crypto.getRandomValues()</code>. Wachtwoord, instellingen en entropiewaarden worden nergens naartoe verzonden.",
+introSecondary: "De entropie wordt berekend op basis van de huidige lengte en tekengroepen; elke geselecteerde groep komt minstens één keer voor. De waarde geldt alleen zolang je het gegenereerde wachtwoord ongewijzigd gebruikt.",
+showHeaderDetails: "Headerdetails tonen",
+hideHeaderDetails: "Headerdetails verbergen",
+switchToLight: "Lichte modus inschakelen",
+switchToDark: "Donkere modus inschakelen",
+settingsRegionLabel: "Wachtwoordinstellingen",
+lengthLabel: "Lengte",
+groupsHeading: "Tekengroepen",
+lowerLabel: "Kleine letters <code>a-z</code>",
+upperLabel: "Hoofdletters <code>A-Z</code>",
+digitsLabel: "Cijfers <code>0-9</code>",
+symbolsLabel: "ASCII-symbolen",
+generateButton: "Wachtwoord genereren",
+copyButton: "Kopiëren",
+copiedButton: "Gekopieerd",
+passwordLabel: "Wachtwoord",
+detailsHeading: "Details",
+alphabetSizeLabel: "Alfabetgrootte",
+entropyLabel: "Entropie",
+searchSpaceLabel: "Zoekruimte",
+bitUnit: "bits",
+errorCrypto: "Deze browser biedt geen crypto.getRandomValues().",
+errorRandomLimit: "Ongeldige bovengrens voor willekeurig getal.",
+errorLength: "De lengte moet een geheel getal tussen 1 en 1000 zijn.",
+errorGroup: "Selecteer minstens één tekengroep.",
+errorTooShort: "De lengte is te kort om elke geselecteerde groep minstens één keer te bevatten.",
+errorAttempts: "Te veel kandidaten afgewezen. Probeer het opnieuw, vergroot de lengte of selecteer minder groepen.",
+errorClipboard: "Het wachtwoord kon niet worden gekopieerd.",
+passwordCopyHint: "Klik in het wachtwoordveld of gebruik de knop Kopiëren om het wachtwoord te kopiëren.",
+tipLengthAria: "Uitleg over wachtwoordlengte",
+tipLength: "Aantal tekens in het wachtwoord. Langere willekeurige wachtwoorden hebben meestal veel meer mogelijke combinaties.",
+tipGroupsAria: "Uitleg over tekengroepen",
+tipGroups: "De geselecteerde groepen bepalen welke tekens in het wachtwoord mogen voorkomen. Elke geselecteerde groep komt minstens één keer voor.",
+tipLowerAria: "Uitleg over kleine letters",
+tipLower: "Voegt de 26 tekens a tot en met z toe aan het alfabet.",
+tipUpperAria: "Uitleg over hoofdletters",
+tipUpper: "Voegt de 26 tekens A tot en met Z toe aan het alfabet.",
+tipDigitsAria: "Uitleg over cijfers",
+tipDigits: "Voegt de tien cijfers 0 tot en met 9 toe aan het alfabet.",
+tipSymbolsAria: "Uitleg over symbolen",
+tipSymbols: "Voegt afdrukbare ASCII-symbolen toe, bijvoorbeeld !, ?, #, %, &, + en /. Spaties zijn niet inbegrepen.",
+tipPasswordAria: "Uitleg over het wachtwoordveld",
+tipPassword: "Het veld is bewust alleen-lezen. Zodra je het wachtwoord handmatig wijzigt, komt de berekende entropie niet meer exact overeen met de generator.",
+tipAlphabetAria: "Uitleg over alfabetgrootte",
+tipAlphabet: "Aantal verschillende tekens dat de generator mag gebruiken. Met alle standaardgroepen zijn dat 94 tekens.",
+tipEntropyAria: "Uitleg over entropie",
+tipEntropy: "Laat zien hoe moeilijk het is om het wachtwoord te raden door alle mogelijkheden te proberen. Meer bits betekent veel meer mogelijke wachtwoorden.<ul><li>&lt;64 bits: laag; niet geschikt voor belangrijke accounts.</li><li>64–79 bits: beperkt; alleen voor minder kritieke of tijdelijke toepassingen.</li><li>80–111 bits: sterk voor veel dagelijks gebruik.</li><li>112–127 bits: zeer sterk.</li><li>128 bits of meer: extreem sterk voor normaal wachtwoordgebruik.</li></ul>",
+tipSearchSpaceAria: "Uitleg over zoekruimte",
+tipSearchSpace: "Het aantal verschillende wachtwoorden dat met de huidige instellingen kan worden gemaakt. Grotere aantallen zijn moeilijker te raden door alle mogelijkheden te proberen.",
 
 }
 };
@@ -1869,6 +2169,10 @@ const base = locale.split("-")[0];
 
 if (base === "de") return "de-DE";
 if (base === "en") return "en-US";
+if (base === "fr") return "fr-FR";
+if (base === "es") return "es-ES";
+if (base === "it") return "it-IT";
+if (base === "nl") return "nl-NL";
 }
 
 return DEFAULT_LOCALE;
@@ -2201,7 +2505,7 @@ function formatBits(bits) {
 return `${bits.toLocaleString(locale, {
 minimumFractionDigits: 2,
 maximumFractionDigits: 2
-})} Bit`;
+})} ${t("bitUnit")}`;
 }
 
 function updatePasswordSize(value) {
