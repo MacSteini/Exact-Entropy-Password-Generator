@@ -736,7 +736,7 @@ font: inherit;
 font-weight: inherit;
 line-height: inherit;
 text-align: center;
-cursor: pointer;
+cursor: default;
 box-decoration-break: clone;
 -webkit-box-decoration-break: clone;
 }
@@ -1276,6 +1276,7 @@ display: block;
 inline-size: 100%;
 padding: 0.15rem 2.4rem;
 border-radius: var(--radius-sm);
+cursor: pointer;
 transition: background-color 120ms ease;
 }
 
@@ -1717,18 +1718,19 @@ const themeMedia = window.matchMedia("(prefers-color-scheme: dark)");
 
 let themeSource = "auto";
 let copyResetTimer = 0;
-let headerDisclosureOverridden = false;
+let compactHeaderCollapsed = true;
 
 translateUI();
-applyDefaultHeaderDisclosure();
+syncHeaderDisclosure();
 applyStoredOrDefaultPalette();
 applyStoredOrSystemTheme();
 
 document.getElementById("generate").addEventListener("click", generateAndRender);
 
 headerToggle.addEventListener("click", () => {
-setHeaderCollapsed(!headerRow.classList.contains("is-collapsed"));
-headerDisclosureOverridden = true;
+if (!compactHeaderMedia.matches) return;
+compactHeaderCollapsed = !compactHeaderCollapsed;
+syncHeaderDisclosure();
 });
 
 copyButton.addEventListener("click", copyPassword);
@@ -1798,7 +1800,7 @@ applyTheme(systemTheme());
 });
 
 compactHeaderMedia.addEventListener("change", () => {
-if (!headerDisclosureOverridden) applyDefaultHeaderDisclosure();
+syncHeaderDisclosure();
 });
 
 document.querySelectorAll("input:not(#password)").forEach(input => {
@@ -1862,18 +1864,25 @@ document.querySelectorAll("[data-i18n-aria]").forEach(element => {
 element.setAttribute("aria-label", t(element.dataset.i18nAria));
 });
 
-setHeaderCollapsed(headerRow.classList.contains("is-collapsed"));
+syncHeaderDisclosure();
 applyPalette(currentPalette());
 }
 
-function setHeaderCollapsed(collapsed) {
-headerRow.classList.toggle("is-collapsed", collapsed);
-headerToggle.setAttribute("aria-expanded", String(!collapsed));
-headerToggle.setAttribute("title", collapsed ? t("showHeaderDetails") : t("hideHeaderDetails"));
-}
+function syncHeaderDisclosure() {
+const compact = compactHeaderMedia.matches;
 
-function applyDefaultHeaderDisclosure() {
-setHeaderCollapsed(compactHeaderMedia.matches);
+headerToggle.disabled = !compact;
+headerRow.classList.toggle("is-collapsed", compact && compactHeaderCollapsed);
+
+if (compact) {
+headerToggle.setAttribute("aria-controls", "headerDetails");
+headerToggle.setAttribute("aria-expanded", String(!compactHeaderCollapsed));
+headerToggle.setAttribute("title", compactHeaderCollapsed ? t("showHeaderDetails") : t("hideHeaderDetails"));
+} else {
+headerToggle.removeAttribute("aria-controls");
+headerToggle.removeAttribute("aria-expanded");
+headerToggle.removeAttribute("title");
+}
 }
 
 function systemTheme() {
