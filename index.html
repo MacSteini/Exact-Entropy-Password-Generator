@@ -1110,25 +1110,20 @@ white-space: nowrap;
 text-align: end;
 }
 
-.note,
+.header-copy,
 .error {
-font-size: var(--text-sm);
 line-height: 1.45;
 }
 
-.note {
+.header-copy {
 color: var(--muted);
-}
-
-.note p + p {
-margin-block-start: var(--space-sm);
 }
 
 .header-copy p + p {
 margin-block-start: 0;
 }
 
-.note code {
+.header-copy code {
 color: var(--fg);
 }
 
@@ -1404,7 +1399,7 @@ transition: none;
 </p>
 
 <div class="header-content">
-<div class="note header-copy">
+<div class="header-copy">
 <p data-i18n-html="introPrimary"></p>
 <p data-i18n="introSecondary"></p>
 </div>
@@ -1714,6 +1709,7 @@ const searchSpaceOutput = document.getElementById("searchSpace");
 const paletteToggle = document.getElementById("paletteToggle");
 const themeToggle = document.getElementById("themeToggle");
 const languageSelect = document.getElementById("languageSelect");
+const generateButton = document.getElementById("generate");
 const copyButton = document.getElementById("copy");
 const headerToggle = document.getElementById("headerToggle");
 const headerRow = document.querySelector(".header-row");
@@ -1729,7 +1725,7 @@ syncHeaderDisclosure();
 applyStoredOrDefaultPalette();
 applyStoredOrSystemTheme();
 
-document.getElementById("generate").addEventListener("click", generateAndRender);
+generateButton.addEventListener("click", generateAndRender);
 
 headerToggle.addEventListener("click", () => {
 if (!compactHeaderMedia.matches) return;
@@ -1771,35 +1767,20 @@ setLocale(languageSelect.value);
 
 paletteToggle.addEventListener("click", () => {
 const nextPalette = randomPalette(currentPalette());
-
-try {
-localStorage.setItem(PALETTE_STORAGE_KEY, nextPalette);
-} catch {
-}
-
+writeStoredValue(PALETTE_STORAGE_KEY, nextPalette);
 applyPalette(nextPalette);
 });
 
 themeToggle.addEventListener("click", () => {
 const nextTheme = currentTheme() === "dark" ? "light" : "dark";
 themeSource = "manual";
-
-try {
-localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
-} catch {
-}
-
+writeStoredValue(THEME_STORAGE_KEY, nextTheme);
 applyTheme(nextTheme);
 });
 
 themeMedia.addEventListener("change", () => {
 themeSource = "auto";
-
-try {
-localStorage.removeItem(THEME_STORAGE_KEY);
-} catch {
-}
-
+removeStoredValue(THEME_STORAGE_KEY);
 applyTheme(systemTheme());
 });
 
@@ -1902,13 +1883,31 @@ const palette = document.documentElement.dataset.palette;
 return COLOR_PALETTES.includes(palette) ? palette : DEFAULT_PALETTE;
 }
 
-function readStoredLocale() {
+function readStoredValue(key) {
 try {
-const stored = localStorage.getItem(LOCALE_STORAGE_KEY);
-return SUPPORTED_LOCALES.includes(stored) ? stored : null;
+return localStorage.getItem(key);
 } catch {
 return null;
 }
+}
+
+function writeStoredValue(key, value) {
+try {
+localStorage.setItem(key, value);
+} catch {
+}
+}
+
+function removeStoredValue(key) {
+try {
+localStorage.removeItem(key);
+} catch {
+}
+}
+
+function readStoredLocale() {
+const stored = readStoredValue(LOCALE_STORAGE_KEY);
+return SUPPORTED_LOCALES.includes(stored) ? stored : null;
 }
 
 function setLocale(nextLocale) {
@@ -1916,33 +1915,20 @@ const safeLocale = SUPPORTED_LOCALES.includes(nextLocale) ? nextLocale : DEFAULT
 locale = safeLocale;
 text = I18N[locale] || I18N[DEFAULT_LOCALE];
 numberFormatter = new Intl.NumberFormat(locale);
-
-try {
-localStorage.setItem(LOCALE_STORAGE_KEY, locale);
-} catch {
-}
-
+writeStoredValue(LOCALE_STORAGE_KEY, locale);
 translateUI();
 applyTheme(currentTheme());
 renderDetailsOnly();
 }
 
 function readStoredTheme() {
-try {
-const stored = localStorage.getItem(THEME_STORAGE_KEY);
+const stored = readStoredValue(THEME_STORAGE_KEY);
 return stored === "dark" || stored === "light" ? stored : null;
-} catch {
-return null;
-}
 }
 
 function readStoredPalette() {
-try {
-const stored = localStorage.getItem(PALETTE_STORAGE_KEY);
+const stored = readStoredValue(PALETTE_STORAGE_KEY);
 return COLOR_PALETTES.includes(stored) ? stored : null;
-} catch {
-return null;
-}
 }
 
 function applyStoredOrDefaultPalette() {
@@ -2011,6 +1997,34 @@ function makeAlphabet(groups) {
 return [...new Set(groups.flatMap(group => [...group.chars]))].join("");
 }
 
+function readSettings(reportErrors = true) {
+const length = Number(lengthInput.value);
+const groups = selectedGroups();
+
+if (!Number.isInteger(length) || length < 1 || length > 1000) {
+if (reportErrors) throw new Error(t("errorLength"));
+return null;
+}
+
+if (groups.length === 0) {
+if (reportErrors) throw new Error(t("errorGroup"));
+return null;
+}
+
+if (length < groups.length) {
+if (reportErrors) throw new Error(t("errorTooShort"));
+return null;
+}
+
+const alphabet = makeAlphabet(groups);
+return {
+length,
+groups,
+alphabet,
+bits: entropyBits(length, groups)
+};
+}
+
 function randomBelow(maxExclusive) {
 if (!Number.isSafeInteger(maxExclusive) || maxExclusive <= 0) {
 throw new Error(t("errorRandomLimit"));
@@ -2036,7 +2050,8 @@ return password;
 }
 
 function containsEveryGroup(password, groups) {
-return groups.every(group => [...password].some(char => group.chars.includes(char)));
+const chars = [...password];
+return groups.every(group => chars.some(char => group.chars.includes(char)));
 }
 
 function generatePassword(length, groups, alphabet) {
@@ -2121,19 +2136,16 @@ const length = Math.max(1, value.length);
 passwordOutput.size = Math.min(length, 128);
 }
 
+function renderMetrics(settings) {
+alphabetSizeOutput.textContent = numberFormatter.format(settings.alphabet.length);
+entropyBitsOutput.textContent = formatBits(settings.bits);
+searchSpaceOutput.textContent = formatSearchSpace(settings.bits);
+}
+
 function renderDetailsOnly() {
 try {
-const length = Number(lengthInput.value);
-const groups = selectedGroups();
-
-if (!Number.isInteger(length) || length < 1 || length > 1000 || groups.length === 0 || length < groups.length) return;
-
-const alphabet = makeAlphabet(groups);
-const bits = entropyBits(length, groups);
-
-alphabetSizeOutput.textContent = numberFormatter.format(alphabet.length);
-entropyBitsOutput.textContent = formatBits(bits);
-searchSpaceOutput.textContent = formatSearchSpace(bits);
+const settings = readSettings(false);
+if (settings) renderMetrics(settings);
 } catch {
 }
 }
@@ -2147,29 +2159,12 @@ if (!window.crypto || !crypto.getRandomValues) {
 throw new Error(t("errorCrypto"));
 }
 
-const length = Number(lengthInput.value);
-const groups = selectedGroups();
-if (!Number.isInteger(length) || length < 1 || length > 1000) {
-throw new Error(t("errorLength"));
-}
-
-if (groups.length === 0) {
-throw new Error(t("errorGroup"));
-}
-
-if (length < groups.length) {
-throw new Error(t("errorTooShort"));
-}
-
-const alphabet = makeAlphabet(groups);
-const password = generatePassword(length, groups, alphabet);
-const bits = entropyBits(length, groups);
+const settings = readSettings();
+const password = generatePassword(settings.length, settings.groups, settings.alphabet);
 
 passwordOutput.value = password;
 updatePasswordSize(password);
-alphabetSizeOutput.textContent = numberFormatter.format(alphabet.length);
-entropyBitsOutput.textContent = formatBits(bits);
-searchSpaceOutput.textContent = formatSearchSpace(bits);
+renderMetrics(settings);
 } catch (err) {
 errorOutput.textContent = err instanceof Error ? err.message : String(err);
 passwordOutput.value = "";
