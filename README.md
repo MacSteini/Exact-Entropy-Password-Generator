@@ -31,6 +31,18 @@ Upload `index.html` as a static file and open it through a browser.
 
 The page does not need server-side code. If you publish it for other people, serve it over HTTPS.
 
+### On GitHub Pages
+
+After publishing the repository to GitHub, you can use GitHub Pages to serve the generator itself.
+
+In the repository settings, set Pages to `Deploy from a branch`, choose the `main` branch, and choose `/ (root)` as the folder. GitHub Pages will then use the existing `index.html` as the site entry point.
+
+The expected project-page URL is:
+
+```text
+https://macsteini.github.io/exact-entropy-password-generator/
+```
+
 ## Privacy
 
 Password generation happens locally in the browser with `crypto.getRandomValues()`.
