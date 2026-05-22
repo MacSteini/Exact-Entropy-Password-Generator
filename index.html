@@ -1093,10 +1093,7 @@ min-inline-size: 0;
 }
 
 .stat-label {
-display: flex;
-flex-wrap: nowrap;
-align-items: center;
-gap: var(--space-2xs);
+display: block;
 min-inline-size: 0;
 font-size: var(--text-sm);
 overflow-wrap: break-word;
@@ -1106,6 +1103,10 @@ white-space: normal;
 .stat-label > [data-i18n] {
 min-inline-size: 0;
 overflow-wrap: anywhere;
+}
+
+.stat-label .tip {
+margin-inline-start: var(--space-2xs);
 }
 
 .stat strong {
