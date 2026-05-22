@@ -3,11 +3,10 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; form-action 'none'; img-src data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'none'; font-src 'none'; object-src 'none'" />
 <title>Exact Entropy Password Generator</title>
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f1416'/%3E%3Cpath d='M32 10l18 7v14c0 12-7.4 20.8-18 23-10.6-2.2-18-11-18-23V17l18-7z' fill='%235eead4'/%3E%3Cpath d='M25 29v-5a7 7 0 0114 0v5' fill='none' stroke='%230f1416' stroke-width='4' stroke-linecap='round'/%3E%3Crect x='22' y='28' width='20' height='16' rx='3' fill='%230f1416'/%3E%3Ccircle cx='32' cy='36' r='2.3' fill='%235eead4'/%3E%3Ccircle cx='21' cy='20' r='2' fill='%230f1416'/%3E%3Ccircle cx='43' cy='20' r='2' fill='%230f1416'/%3E%3Ccircle cx='22' cy='47' r='2' fill='%230f1416'/%3E%3Ccircle cx='42' cy='47' r='2' fill='%230f1416'/%3E%3C/svg%3E" />
-<link rel="preconnect" href="https://rsms.me/" />
-<link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
 
 <script>
 (() => {
@@ -64,7 +63,7 @@ document.documentElement.dataset.palette = resolvePalette();
 <style>
 :root {
 color-scheme: light dark;
-font-family: Inter, sans-serif;
+font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 font-feature-settings: "liga" 1, "calt" 1;
 font-synthesis: none;
 -webkit-text-size-adjust: 100%;
@@ -92,13 +91,6 @@ text-size-adjust: 100%;
 --icon-control-size: 2.75rem;
 --control-pad-block: 0.58rem;
 --control-pad-inline: 0.85rem;
-}
-
-@supports (font-variation-settings: normal) {
-:root {
-font-family: InterVariable, sans-serif;
-font-optical-sizing: auto;
-}
 }
 
 :root[data-theme="light"] {
@@ -654,6 +646,10 @@ font-size: var(--text-sm);
 text-wrap: pretty;
 }
 
+.header-title-text {
+display: inline;
+}
+
 .top-controls {
 display: flex;
 flex: 0 0 auto;
@@ -686,7 +682,7 @@ appearance: none;
 inline-size: var(--icon-control-size);
 block-size: var(--icon-control-size);
 padding: 0;
-border: 1px solid var(--border);
+border: 1px solid var(--fg);
 border-radius: var(--radius-sm);
 background: var(--secondary-bg);
 color: var(--fg);
@@ -730,7 +726,7 @@ text-wrap: balance;
 }
 
 .header-title-toggle {
-display: inline-block;
+display: none;
 padding: 0;
 border: 0;
 border-radius: 0;
@@ -961,7 +957,7 @@ grid-template-columns: auto minmax(0, 1fr) auto;
 align-items: center;
 gap: var(--space-xs);
 padding: 0.62rem 0.7rem;
-border: 1px solid var(--soft-border);
+border: 1px solid var(--border);
 border-radius: var(--radius-sm);
 background: var(--secondary-bg);
 min-block-size: 3.2rem;
@@ -1023,7 +1019,7 @@ button.secondary,
 .github-link {
 background: var(--secondary-bg);
 color: var(--fg);
-border: 1px solid var(--accent-border);
+border: 1px solid var(--fg);
 }
 
 button.secondary:hover,
@@ -1086,7 +1082,7 @@ display: grid;
 grid-template-columns: auto minmax(0, max-content);
 align-items: baseline;
 gap: 0.4rem;
-border: 1px solid var(--accent-border);
+border: 1px solid var(--fg);
 border-radius: var(--radius-md);
 padding: 0.58rem 0.65rem;
 background: linear-gradient(145deg, var(--stat-bg), var(--accent-soft));
@@ -1273,6 +1269,10 @@ h1 {
 font-size: 1.7rem;
 }
 
+.header-title-text {
+display: none;
+}
+
 .header-title-toggle {
 position: relative;
 display: block;
@@ -1392,6 +1392,7 @@ transition: none;
 <header>
 <div class="header-row">
 <h1>
+<span class="header-title-text" data-i18n="title">Exact Entropy Password Generator</span>
 <button id="headerToggle" class="header-title-toggle" type="button" aria-expanded="true" aria-controls="headerDetails">
 <span data-i18n="title">Exact Entropy Password Generator</span>
 </button>
@@ -1412,7 +1413,7 @@ transition: none;
 <p data-i18n="introSecondary"></p>
 </div>
 <div class="top-controls">
-<button id="paletteToggle" class="secondary theme-toggle" type="button" aria-pressed="false">◈</button>
+<button id="paletteToggle" class="secondary theme-toggle" type="button">◈</button>
 <button id="themeToggle" class="secondary theme-toggle" type="button" aria-pressed="false"></button>
 <label class="language-control" for="languageSelect">
 <span class="sr-only" data-i18n="languageSelectAria">Language</span>
@@ -1551,7 +1552,8 @@ transition: none;
 <span class="tip-content" data-i18n="tipPassword"></span>
 </span>
 </div>
-<input id="password" type="text" readonly spellcheck="false" autocomplete="off" />
+<input id="password" type="text" readonly spellcheck="false" autocomplete="off" aria-describedby="passwordCopyHint" />
+<span id="passwordCopyHint" class="sr-only" data-i18n="passwordCopyHint">Click the password field or use the Copy button to copy the password.</span>
 </div>
 
 <div class="actions">
@@ -1559,7 +1561,7 @@ transition: none;
 <button id="copy" class="secondary" type="button" data-i18n="copyButton" aria-live="polite">Copy</button>
 </div>
 
-<p id="error" class="error"></p>
+<p id="error" class="error" role="status" aria-live="polite" aria-atomic="true"></p>
 </div>
 </section>
 </main>
@@ -1570,6 +1572,18 @@ transition: none;
 const SUPPORTED_LOCALES = ["en-GB", "en-US", "de-DE"];
 const DEFAULT_LOCALE = "en-US";
 const COLOR_PALETTES = ["teal", "indigo", "rose", "amber", "forest", "ocean", "violet", "copper", "graphite", "candy"];
+const PALETTE_SYMBOLS = {
+teal: "◈",
+indigo: "◆",
+rose: "●",
+amber: "▲",
+forest: "■",
+ocean: "⬟",
+violet: "✦",
+copper: "✚",
+graphite: "⬢",
+candy: "✿"
+};
 const DEFAULT_PALETTE = COLOR_PALETTES[0];
 const THEME_STORAGE_KEY = "passwordGeneratorThemeOverride";
 const PALETTE_STORAGE_KEY = "passwordGeneratorPaletteOverride";
@@ -1582,6 +1596,17 @@ languageName: "English (US)",
 languageSelectAria: "Choose language",
 githubLinkAria: "Open GitHub repository",
 randomColorLayout: "Random color layout",
+paletteStatus: "Random color layout. Current palette: {palette}.",
+paletteTeal: "Teal",
+paletteIndigo: "Indigo",
+paletteRose: "Rose",
+paletteAmber: "Amber",
+paletteForest: "Forest",
+paletteOcean: "Ocean",
+paletteViolet: "Violet",
+paletteCopper: "Copper",
+paletteGraphite: "Graphite",
+paletteCandy: "Candy",
 title: "Exact Entropy Password Generator",
 introPrimary: "Creates passwords locally in your browser with <code>crypto.getRandomValues()</code>. Passwords, settings and entropy values are not sent anywhere.",
 introSecondary: "Entropy is calculated from the current length and character groups; every selected group appears at least once. The value applies only while you use the generated password unchanged.",
@@ -1609,8 +1634,9 @@ errorRandomLimit: "Invalid upper bound for random number.",
 errorLength: "Length must be an integer between 1 and 1000.",
 errorGroup: "Select at least one character group.",
 errorTooShort: "Length is too short to contain each selected group at least once.",
-errorAttempts: "Too many rejected candidates. Increase the length or disable requiring all groups.",
+errorAttempts: "Too many rejected candidates. Try again, increase the length, or select fewer groups.",
 errorClipboard: "Could not copy the password.",
+passwordCopyHint: "Click the password field or use the Copy button to copy the password.",
 tipLengthAria: "Explanation of password length",
 tipLength: "Number of characters in the password. Longer random passwords usually have many more possible combinations.",
 tipGroupsAria: "Explanation of character groups",
@@ -1640,6 +1666,17 @@ languageName: "Deutsch (Deutschland)",
 languageSelectAria: "Sprache auswählen",
 githubLinkAria: "GitHub-Repository öffnen",
 randomColorLayout: "Zufälliges Farblayout",
+paletteStatus: "Zufälliges Farblayout. Aktuelle Palette: {palette}.",
+paletteTeal: "Türkis",
+paletteIndigo: "Indigo",
+paletteRose: "Rose",
+paletteAmber: "Bernstein",
+paletteForest: "Wald",
+paletteOcean: "Ozean",
+paletteViolet: "Violett",
+paletteCopper: "Kupfer",
+paletteGraphite: "Graphit",
+paletteCandy: "Candy",
 title: "Generator für Passwörter mit exakter Entropie",
 introPrimary: "Erzeugt Passwörter lokal im Browser mit <code>crypto.getRandomValues()</code>. Passwort, Einstellungen und Entropiewerte werden nirgendwohin übertragen.",
 introSecondary: "Die Entropie wird aus aktueller Länge und Zeichengruppen berechnet; jede ausgewählte Gruppe kommt mindestens einmal vor. Der Wert gilt nur, solange du das generierte Passwort unverändert nutzt.",
@@ -1667,8 +1704,9 @@ errorRandomLimit: "Ungültige Obergrenze für Zufallszahl.",
 errorLength: "Die Länge muss eine ganze Zahl zwischen 1 und 1000 sein.",
 errorGroup: "Wähle mindestens eine Zeichengruppe aus.",
 errorTooShort: "Die Länge ist zu kurz, um jede ausgewählte Gruppe mindestens einmal zu enthalten.",
-errorAttempts: "Zu viele verworfene Kandidaten. Erhöhe die Länge oder deaktiviere das Erzwingen aller Gruppen.",
+errorAttempts: "Zu viele verworfene Kandidaten. Versuche es erneut, erhöhe die Länge oder wähle weniger Gruppen aus.",
 errorClipboard: "Das Passwort konnte nicht kopiert werden.",
+passwordCopyHint: "Klicke in das Passwortfeld oder nutze den Kopieren-Button, um das Passwort zu kopieren.",
 tipLengthAria: "Erklärung zur Passwortlänge",
 tipLength: "Anzahl der Zeichen im Passwort. Längere zufällige Passwörter haben normalerweise sehr viel mehr mögliche Kombinationen.",
 tipGroupsAria: "Erklärung zu Zeichengruppen",
@@ -1723,13 +1761,12 @@ const generateButton = document.getElementById("generate");
 const copyButton = document.getElementById("copy");
 const headerToggle = document.getElementById("headerToggle");
 const headerRow = document.querySelector(".header-row");
-const compactHeaderMedia = window.matchMedia("(max-width: 44rem)");
 const themeMedia = window.matchMedia("(prefers-color-scheme: dark)");
 
-let themeSource = "auto";
 let copyResetTimer = 0;
 let compactHeaderCollapsed = true;
 
+wireTipDescriptions();
 translateUI();
 syncHeaderDisclosure();
 applyStoredOrDefaultPalette();
@@ -1738,7 +1775,7 @@ applyStoredOrSystemTheme();
 generateButton.addEventListener("click", generateAndRender);
 
 headerToggle.addEventListener("click", () => {
-if (!compactHeaderMedia.matches) return;
+if (!isCompactHeader()) return;
 compactHeaderCollapsed = !compactHeaderCollapsed;
 syncHeaderDisclosure();
 });
@@ -1783,20 +1820,16 @@ applyPalette(nextPalette);
 
 themeToggle.addEventListener("click", () => {
 const nextTheme = currentTheme() === "dark" ? "light" : "dark";
-themeSource = "manual";
 writeStoredValue(THEME_STORAGE_KEY, nextTheme);
 applyTheme(nextTheme);
 });
 
-themeMedia.addEventListener("change", () => {
-themeSource = "auto";
+onMediaChange(themeMedia, () => {
 removeStoredValue(THEME_STORAGE_KEY);
 applyTheme(systemTheme());
 });
 
-compactHeaderMedia.addEventListener("change", () => {
-syncHeaderDisclosure();
-});
+window.addEventListener("resize", syncHeaderDisclosure);
 
 document.querySelectorAll("input:not(#password)").forEach(input => {
 input.addEventListener("input", generateAndRender);
@@ -1871,10 +1904,34 @@ syncHeaderDisclosure();
 applyPalette(currentPalette());
 }
 
-function syncHeaderDisclosure() {
-const compact = compactHeaderMedia.matches;
+function wireTipDescriptions() {
+document.querySelectorAll(".tip").forEach((tip, index) => {
+const button = tip.querySelector(".tip-icon");
+const content = tip.querySelector(".tip-content");
 
-headerToggle.disabled = !compact;
+if (!button || !content) return;
+if (!content.id) content.id = `tipContent${index + 1}`;
+
+button.setAttribute("aria-describedby", content.id);
+});
+}
+
+function onMediaChange(mediaQuery, callback) {
+if (mediaQuery.addEventListener) {
+mediaQuery.addEventListener("change", callback);
+return;
+}
+
+mediaQuery.addListener(callback);
+}
+
+function isCompactHeader() {
+return getComputedStyle(headerToggle, "::after").display !== "none";
+}
+
+function syncHeaderDisclosure() {
+const compact = isCompactHeader();
+
 headerRow.classList.toggle("is-collapsed", compact && compactHeaderCollapsed);
 
 if (compact) {
@@ -1957,12 +2014,10 @@ function applyStoredOrSystemTheme() {
 const storedTheme = readStoredTheme();
 
 if (storedTheme) {
-themeSource = "manual";
 applyTheme(storedTheme);
 return;
 }
 
-themeSource = "auto";
 applyTheme(systemTheme());
 }
 
@@ -1986,12 +2041,13 @@ return candidates[randomBelow(candidates.length)];
 
 function applyPalette(palette) {
 const safePalette = COLOR_PALETTES.includes(palette) ? palette : DEFAULT_PALETTE;
+const paletteName = t(`palette${safePalette[0].toUpperCase()}${safePalette.slice(1)}`);
+const label = t("paletteStatus", { palette: paletteName });
 
 document.documentElement.dataset.palette = safePalette;
-paletteToggle.textContent = "◈";
-paletteToggle.setAttribute("aria-pressed", "false");
-paletteToggle.setAttribute("aria-label", t("randomColorLayout"));
-paletteToggle.setAttribute("title", t("randomColorLayout"));
+paletteToggle.textContent = PALETTE_SYMBOLS[safePalette] || PALETTE_SYMBOLS[DEFAULT_PALETTE];
+paletteToggle.setAttribute("aria-label", label);
+paletteToggle.setAttribute("title", label);
 }
 
 function charsFromRange(start, end) {
