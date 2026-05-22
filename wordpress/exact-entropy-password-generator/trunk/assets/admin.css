@@ -1,0 +1,245 @@
+.eepg-wrap {
+	max-width: 1200px;
+}
+
+.eepg-app {
+	--eepg-bg: #f5faf7;
+	--eepg-card: #fff;
+	--eepg-fg: #102016;
+	--eepg-muted: #526255;
+	--eepg-border: #a8c7b3;
+	--eepg-accent: #14713a;
+	--eepg-accent-soft: #dff4e7;
+	--eepg-error: #b32d2e;
+	margin-top: 1rem;
+	color: var(--eepg-fg);
+}
+
+.eepg-app[data-theme="dark"] {
+	--eepg-bg: #07130d;
+	--eepg-card: #102018;
+	--eepg-fg: #f1f8f3;
+	--eepg-muted: #b8cbbd;
+	--eepg-border: #4c8060;
+	--eepg-accent: #78e2a0;
+	--eepg-accent-soft: #1c3b28;
+	--eepg-error: #ffb3b3;
+}
+
+.eepg-app[data-palette="indigo"] { --eepg-accent: #4f46e5; --eepg-accent-soft: #e0e7ff; --eepg-border: #a5b4fc; }
+.eepg-app[data-palette="rose"] { --eepg-accent: #be123c; --eepg-accent-soft: #ffe4e6; --eepg-border: #fda4af; }
+.eepg-app[data-palette="amber"] { --eepg-accent: #b45309; --eepg-accent-soft: #fef3c7; --eepg-border: #f8cf73; }
+.eepg-app[data-palette="forest"] { --eepg-accent: #166534; --eepg-accent-soft: #dcfce7; --eepg-border: #86efac; }
+.eepg-app[data-palette="ocean"] { --eepg-accent: #0369a1; --eepg-accent-soft: #e0f2fe; --eepg-border: #7dd3fc; }
+.eepg-app[data-palette="violet"] { --eepg-accent: #7e22ce; --eepg-accent-soft: #f3e8ff; --eepg-border: #d8b4fe; }
+.eepg-app[data-palette="copper"] { --eepg-accent: #9a3412; --eepg-accent-soft: #ffedd5; --eepg-border: #fdba74; }
+.eepg-app[data-palette="graphite"] { --eepg-accent: #3f3f46; --eepg-accent-soft: #f4f4f5; --eepg-border: #a1a1aa; }
+.eepg-app[data-palette="candy"] { --eepg-accent: #c026d3; --eepg-accent-soft: #fae8ff; --eepg-border: #f0abfc; }
+
+.eepg-app[data-theme="dark"][data-palette] {
+	--eepg-accent-soft: #18251e;
+}
+
+.eepg-header,
+.eepg-card {
+	background: var(--eepg-bg);
+	border: 1px solid var(--eepg-border);
+	border-radius: 8px;
+	padding: clamp(1rem, 2vw, 1.5rem);
+}
+
+.eepg-header h1 {
+	margin: 0 0 1rem;
+	font-size: clamp(2rem, 5vw, 4rem);
+	line-height: 1.05;
+	text-wrap: balance;
+	color: var(--eepg-fg);
+}
+
+.eepg-header-grid {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	gap: 1rem;
+	align-items: center;
+}
+
+.eepg-copy {
+	max-width: 72rem;
+	font-size: 1rem;
+	color: var(--eepg-muted);
+	text-wrap: pretty;
+}
+
+.eepg-copy code,
+.eepg-group-option code {
+	font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+	font-size: .95em;
+}
+
+.eepg-controls {
+	display: flex;
+	flex-direction: column;
+	gap: .5rem;
+	align-items: center;
+}
+
+.eepg-icon-button,
+.eepg-language-control select {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	inline-size: 3rem;
+	block-size: 3rem;
+	border: 1px solid var(--eepg-border);
+	border-radius: 8px;
+	background: var(--eepg-card);
+	color: var(--eepg-fg);
+	font-size: 1.25rem;
+	cursor: pointer;
+}
+
+.eepg-language-control select {
+	appearance: none;
+	text-align: center;
+	padding: 0;
+}
+
+.eepg-card {
+	margin-top: 1rem;
+	background: color-mix(in srgb, var(--eepg-bg) 72%, var(--eepg-card));
+}
+
+.eepg-settings {
+	display: grid;
+	grid-template-columns: minmax(8rem, 12rem) minmax(0, 1fr);
+	gap: 1.5rem;
+}
+
+.eepg-length-control {
+	display: grid;
+	gap: .5rem;
+	align-content: start;
+}
+
+.eepg-length-control label,
+.eepg-groups legend,
+.eepg-password-box label {
+	font-size: 1.1rem;
+	font-weight: 700;
+}
+
+.eepg-length-control input {
+	max-width: 8rem;
+	font-size: 1.4rem;
+	font-weight: 700;
+}
+
+.eepg-groups {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: .75rem;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+.eepg-groups legend {
+	grid-column: 1 / -1;
+	margin-bottom: .25rem;
+}
+
+.eepg-group-option {
+	display: grid;
+	grid-template-columns: auto minmax(0, 1fr);
+	gap: .75rem;
+	align-items: center;
+	min-height: 3.5rem;
+	padding: .75rem;
+	border: 1px solid var(--eepg-border);
+	border-radius: 8px;
+	background: var(--eepg-accent-soft);
+	font-weight: 650;
+}
+
+.eepg-group-option input {
+	inline-size: 1.25rem;
+	block-size: 1.25rem;
+}
+
+.eepg-stats {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: .75rem;
+}
+
+.eepg-stat {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) auto;
+	gap: .5rem;
+	align-items: baseline;
+	padding: .7rem;
+	border: 1px solid var(--eepg-border);
+	border-radius: 8px;
+	background: var(--eepg-card);
+}
+
+.eepg-stat span {
+	overflow-wrap: anywhere;
+}
+
+.eepg-stat strong {
+	white-space: nowrap;
+	font-size: 1.1rem;
+}
+
+.eepg-password-box {
+	display: grid;
+	gap: .5rem;
+	margin-top: 1.5rem;
+}
+
+.eepg-password-box input {
+	width: min(100%, 74rem);
+	max-width: 100%;
+	font: 1.1rem/1.4 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+.eepg-actions {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	gap: .75rem;
+	margin-top: 1rem;
+}
+
+.eepg-error {
+	min-height: 1.4em;
+	color: var(--eepg-error);
+	font-weight: 600;
+}
+
+.eepg-user-password-entropy {
+	margin-top: .4rem;
+}
+
+.eepg-user-password-entropy a {
+	font-weight: 600;
+}
+
+@media (max-width: 782px) {
+	.eepg-header-grid,
+	.eepg-settings,
+	.eepg-stats,
+	.eepg-groups {
+		grid-template-columns: 1fr;
+	}
+
+	.eepg-controls {
+		flex-direction: row;
+		justify-content: center;
+	}
+
+	.eepg-actions {
+		justify-content: stretch;
+	}
+}
