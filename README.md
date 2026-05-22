@@ -129,7 +129,9 @@ Use a modern browser with support for `crypto.getRandomValues()`.
 
 ## Contributing
 
-[Contributions are welcome!](https://github.com/MacSteini/exact-entropy-password-generator/blob/main/CONTRIBUTING.md "Contributions are welcome!")
+Bug reports, small fixes and documentation improvements are welcome.
+
+Keep changes focused, test `index.html` in a modern browser when the interface changes, and do not include secrets, tokens or private keys. Please report security issues privately instead of publishing exploit details.
 
 ## Licence
 
