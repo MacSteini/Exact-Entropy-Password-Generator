@@ -83,6 +83,9 @@ Use a password manager to store generated passwords.
 A modern browser with support for `crypto.getRandomValues()` is required.
 
 ## Contributing
+
 [Contributions are welcome!](https://github.com/MacSteini/exact-entropy-password-generator/blob/main/CONTRIBUTING.md "Contributions are welcome!")
+
 ## Licence
+
 This project uses the [MIT Licence](LICENCE "MIT Licence"). You may use, change, and distribute it in compliance with the licence terms.
