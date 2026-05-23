@@ -18,6 +18,8 @@ The plugin also adds a single entropy link below the normal WordPress backend pa
 
 Passwords are not stored by this plugin, sent to a server, or written to the database by the generator.
 
+The interface uses the active WordPress language. The plugin does not include its own language, colour, or dark mode switches.
+
 == Installation ==
 
 1. Upload the `exact-entropy-password-generator` folder to `/wp-content/plugins/`.
@@ -41,6 +43,10 @@ No. The entropy line is informational only. It does not block, approve, or modif
 = Does this affect Application Passwords? =
 
 No. Application Passwords remain fully managed by WordPress core.
+
+= Is the plugin translatable? =
+
+Yes. The plugin uses the `exact-entropy-password-generator` text domain and follows the active WordPress language.
 
 == Changelog ==
 
