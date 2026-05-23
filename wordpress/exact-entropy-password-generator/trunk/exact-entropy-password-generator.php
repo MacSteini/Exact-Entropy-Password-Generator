@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Exact Entropy Password Generator
- * Plugin URI: https://github.com/MacSteini/exact-entropy-password-generator
+ * Plugin URI: https://wordpress.org/plugins/exact-entropy-password-generator/
  * Description: Adds an exact-entropy password generator to the WordPress admin area and shows entropy while backend user passwords are created or updated.
  * Version: 1.0.0
  * Author: Marco Steinbrecher
