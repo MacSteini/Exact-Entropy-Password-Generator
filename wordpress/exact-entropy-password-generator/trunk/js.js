@@ -8,7 +8,10 @@
 		symbols: charsFromRanges( [ [ 0x21, 0x2f ], [ 0x3a, 0x40 ], [ 0x5b, 0x60 ], [ 0x7b, 0x7e ] ] )
 	};
 
-	document.addEventListener( "DOMContentLoaded", initGenerator );
+	document.addEventListener( "DOMContentLoaded", function () {
+		initGenerator();
+		initUserPasswordEntropy();
+	} );
 
 	function initGenerator() {
 		var app = document.getElementById( "eepg-generator-app" );
@@ -40,14 +43,14 @@
 			copyPassword( app, elements );
 		} );
 		elements.length.addEventListener( "input", function () {
-			renderDetailsOnly( app, elements );
+			generateAndRender( app, elements );
 		} );
 
 		[ "lower", "upper", "digits", "symbols" ].forEach( function ( id ) {
 			var checkbox = app.querySelector( "#" + id );
 			if ( checkbox ) {
 				checkbox.addEventListener( "change", function () {
-					renderDetailsOnly( app, elements );
+					generateAndRender( app, elements );
 				} );
 			}
 		} );
@@ -267,5 +270,71 @@
 			return;
 		}
 		elements.error.textContent = label( app, "errorClipboard", "The password could not be copied." );
+	}
+
+	function initUserPasswordEntropy() {
+		var config = window.EEPG_USER_PASSWORD || {};
+		var input = document.getElementById( "pass1" );
+		if ( ! input || document.getElementById( "eepg-user-password-entropy" ) ) {
+			return;
+		}
+
+		var target = input.closest( ".password-input-wrapper" ) || input;
+		var line = document.createElement( "p" );
+		var link = document.createElement( "a" );
+		line.id = "eepg-user-password-entropy";
+		line.className = "description";
+		line.setAttribute( "role", "status" );
+		line.setAttribute( "aria-live", "polite" );
+		line.setAttribute( "aria-atomic", "true" );
+		link.href = config.generatorUrl || "tools.php?page=exact-entropy-password-generator";
+		line.appendChild( link );
+		target.insertAdjacentElement( "afterend", line );
+
+		var update = function () {
+			var password = input.value || "";
+			var bits = estimateTypedPasswordEntropy( password );
+			var entropyLabel = config.label || "Entropy";
+			var unit = config.bits || "bits";
+			link.textContent = password && Number.isFinite( bits ) ? entropyLabel + ": " + bits.toFixed( 2 ) + " " + unit : entropyLabel + ": " + ( config.notAvailable || "not available" );
+		};
+
+		input.addEventListener( "input", update );
+		input.addEventListener( "change", update );
+		document.addEventListener( "click", function ( event ) {
+			if ( event.target && event.target.matches( ".wp-generate-pw, .wp-cancel-pw" ) ) {
+				window.setTimeout( update, 0 );
+				window.setTimeout( update, 100 );
+			}
+		} );
+		update();
+	}
+
+	function estimateTypedPasswordEntropy( password ) {
+		if ( ! password ) {
+			return NaN;
+		}
+		var groupSizes = [];
+		if ( /[a-z]/.test( password ) ) {
+			groupSizes.push( 26 );
+		}
+		if ( /[A-Z]/.test( password ) ) {
+			groupSizes.push( 26 );
+		}
+		if ( /[0-9]/.test( password ) ) {
+			groupSizes.push( 10 );
+		}
+		if ( /[!-\/:-@\[-`{-~]/.test( password ) ) {
+			groupSizes.push( 32 );
+		}
+		var extraChars = Array.from( password ).filter( function ( char ) {
+			return ! /[A-Za-z0-9!-\/:-@\[-`{-~]/.test( char );
+		} );
+		if ( extraChars.length ) {
+			groupSizes.push( Array.from( new Set( extraChars ) ).length );
+		}
+		return groupSizes.length ? Array.from( password ).length * Math.log2( groupSizes.reduce( function ( sum, size ) {
+			return sum + size;
+		}, 0 ) ) : NaN;
 	}
 }());
