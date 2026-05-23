@@ -158,14 +158,6 @@
 	font-weight: 600;
 }
 
-.eepg-user-password-entropy {
-	margin-top: .4rem;
-}
-
-.eepg-user-password-entropy a {
-	font-weight: 600;
-}
-
 @media (max-width: 782px) {
 	.eepg-settings,
 	.eepg-stats,

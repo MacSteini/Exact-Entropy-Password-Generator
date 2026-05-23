@@ -12,7 +12,7 @@ Adds an exact-entropy password generator to the WordPress admin area.
 
 == Description ==
 
-Exact Entropy Password Generator adds a local password generator to the WordPress admin sidebar. The generator runs in the browser, uses `crypto.getRandomValues()`, and shows alphabet size, entropy and search space for the selected length and character groups.
+Exact Entropy Password Generator adds a local password generator under **Settings > Exact Entropy** in the WordPress admin area. The generator runs in the browser, uses `crypto.getRandomValues()`, and shows alphabet size, entropy and search space for the selected length and character groups.
 
 The plugin also adds a single entropy link below the normal WordPress backend password field when a user password is created or updated. It does not add entropy output to login forms, password reset screens, post password forms, or Application Passwords.
 
@@ -24,7 +24,7 @@ The interface uses the active WordPress language. The plugin does not include it
 
 1. Upload the `exact-entropy-password-generator` folder to `/wp-content/plugins/`.
 2. Activate the plugin in **Plugins**.
-3. Open **Password Generator** in the WordPress admin sidebar.
+3. Open **Settings > Exact Entropy** in the WordPress admin menu.
 
 == Frequently Asked Questions ==
 
