@@ -27,7 +27,8 @@
 			entropyBits: app.querySelector( "#entropyBits" ),
 			searchSpace: app.querySelector( "#searchSpace" ),
 			generate: app.querySelector( "#generate" ),
-			copy: app.querySelector( "#copy" )
+			copy: app.querySelector( "#copy" ),
+			copyStatus: app.querySelector( "#copyStatus" )
 		};
 
 		renderDetailsOnly( app, elements );
@@ -259,6 +260,12 @@
 		}
 		var done = function () {
 			elements.copy.textContent = label( app, "copiedLabel", "Copied" );
+			if ( elements.copyStatus ) {
+				elements.copyStatus.textContent = "";
+				window.setTimeout( function () {
+					elements.copyStatus.textContent = label( app, "copyStatus", "Password copied." );
+				}, 0 );
+			}
 			window.setTimeout( function () {
 				elements.copy.textContent = label( app, "copyLabel", "Copy" );
 			}, 1600 );
@@ -282,13 +289,16 @@
 		var target = input.closest( ".password-input-wrapper" ) || input;
 		var line = document.createElement( "p" );
 		var link = document.createElement( "a" );
+		var live = document.createElement( "span" );
 		line.id = "eepg-user-password-entropy";
 		line.className = "description";
-		line.setAttribute( "role", "status" );
-		line.setAttribute( "aria-live", "polite" );
-		line.setAttribute( "aria-atomic", "true" );
 		link.href = config.generatorUrl || "tools.php?page=exact-entropy-password-generator";
+		live.className = "screen-reader-text";
+		live.setAttribute( "role", "status" );
+		live.setAttribute( "aria-live", "polite" );
+		live.setAttribute( "aria-atomic", "true" );
 		line.appendChild( link );
+		line.appendChild( live );
 		target.insertAdjacentElement( "afterend", line );
 
 		var update = function () {
@@ -296,7 +306,10 @@
 			var bits = estimateTypedPasswordEntropy( password );
 			var entropyLabel = config.label || "Entropy";
 			var unit = config.bits || "bits";
-			link.textContent = password && Number.isFinite( bits ) ? entropyLabel + ": " + bits.toFixed( 2 ) + " " + unit : entropyLabel + ": " + ( config.notAvailable || "not available" );
+			var text = password && Number.isFinite( bits ) ? entropyLabel + ": " + formatTypedEntropy( bits, config ) + " " + unit : entropyLabel + ": " + ( config.notAvailable || "not available" );
+			link.textContent = text;
+			link.setAttribute( "aria-label", ( config.generatorLinkLabel || "Open exact entropy generator" ) + ". " + text );
+			live.textContent = text;
 		};
 
 		input.addEventListener( "input", update );
@@ -308,6 +321,14 @@
 			}
 		} );
 		update();
+	}
+
+	function formatTypedEntropy( bits, config ) {
+		try {
+			return bits.toLocaleString( config.locale || navigator.language || "en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 } );
+		} catch ( error ) {
+			return bits.toFixed( 2 );
+		}
 	}
 
 	function estimateTypedPasswordEntropy( password ) {

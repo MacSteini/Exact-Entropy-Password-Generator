@@ -37,8 +37,8 @@ function eepg_is_user_password_screen( $hook_suffix ) {
  */
 function eepg_register_admin_page() {
 	$GLOBALS['eepg_admin_page_hook'] = add_management_page(
-		'Exact Entropy Password Generator',
-		'Exact Entropy',
+		__( 'Exact Entropy Password Generator', 'exact-entropy-password-generator' ),
+		__( 'Exact Entropy', 'exact-entropy-password-generator' ),
 		'manage_options',
 		EEPG_MENU_SLUG,
 		'eepg_render_admin_page'
@@ -102,6 +102,7 @@ function eepg_render_admin_page() {
 			data-bit-unit="<?php echo esc_attr__( 'bits', 'exact-entropy-password-generator' ); ?>"
 			data-copy-label="<?php echo esc_attr__( 'Copy', 'exact-entropy-password-generator' ); ?>"
 			data-copied-label="<?php echo esc_attr__( 'Copied', 'exact-entropy-password-generator' ); ?>"
+			data-copy-status="<?php echo esc_attr__( 'Password copied.', 'exact-entropy-password-generator' ); ?>"
 			data-error-crypto="<?php echo esc_attr__( 'This browser does not provide crypto.getRandomValues().', 'exact-entropy-password-generator' ); ?>"
 			data-error-random-limit="<?php echo esc_attr__( 'Invalid upper bound for random number.', 'exact-entropy-password-generator' ); ?>"
 			data-error-settings="<?php echo esc_attr__( 'Check the password length and selected character groups.', 'exact-entropy-password-generator' ); ?>"
@@ -163,6 +164,7 @@ function eepg_render_admin_page() {
 					<label for="password"><?php echo esc_html__( 'Password', 'exact-entropy-password-generator' ); ?></label>
 					<input id="password" type="text" readonly spellcheck="false" autocomplete="off" aria-describedby="passwordCopyHint" />
 					<span id="passwordCopyHint" class="screen-reader-text"><?php echo esc_html__( 'Click the password field or use the copy button to copy the password.', 'exact-entropy-password-generator' ); ?></span>
+					<span id="copyStatus" class="screen-reader-text" role="status" aria-live="polite" aria-atomic="true"></span>
 				</div>
 
 				<div class="eepg-actions">
@@ -207,6 +209,8 @@ function eepg_print_user_password_config() {
 	<script>
 		window.EEPG_USER_PASSWORD = {
 			generatorUrl: <?php echo wp_json_encode( admin_url( 'tools.php?page=' . EEPG_MENU_SLUG ) ); ?>,
+			generatorLinkLabel: <?php echo wp_json_encode( __( 'Open exact entropy generator', 'exact-entropy-password-generator' ) ); ?>,
+			locale: <?php echo wp_json_encode( str_replace( '_', '-', get_user_locale() ) ); ?>,
 			label: <?php echo wp_json_encode( __( 'Entropy', 'exact-entropy-password-generator' ) ); ?>,
 			bits: <?php echo wp_json_encode( __( 'bits', 'exact-entropy-password-generator' ) ); ?>,
 			notAvailable: <?php echo wp_json_encode( __( 'not available', 'exact-entropy-password-generator' ) ); ?>
