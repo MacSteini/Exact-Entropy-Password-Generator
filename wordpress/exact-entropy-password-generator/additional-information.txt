@@ -1,0 +1,5 @@
+Exact Entropy Password Generator is a small WordPress backend plugin. It adds a local password generator under Tools > Exact Entropy and shows an informational link only on backend screens where normal user passwords are created or updated.
+
+The plugin does not store generated passwords, does not send passwords or settings to any server, and does not add output to login, password reset, post password, or Application Password screens. The generator runs in the browser and uses crypto.getRandomValues().
+
+The initial ZIP contains only the installable plugin folder. The repository also keeps a WordPress.org SVN-ready structure with trunk and assets for later deployment after approval.

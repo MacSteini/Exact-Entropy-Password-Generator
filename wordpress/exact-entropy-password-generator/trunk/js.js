@@ -302,11 +302,8 @@
 		target.insertAdjacentElement( "afterend", line );
 
 		var update = function () {
-			var password = input.value || "";
-			var bits = estimateTypedPasswordEntropy( password );
 			var entropyLabel = config.label || "Entropy";
-			var unit = config.bits || "bits";
-			var text = password && Number.isFinite( bits ) ? entropyLabel + ": " + formatTypedEntropy( bits, config ) + " " + unit : entropyLabel + ": " + ( config.notAvailable || "not available" );
+			var text = entropyLabel + ": " + ( config.notAvailable || "exact entropy is not available for typed or edited passwords" );
 			link.textContent = text;
 			link.setAttribute( "aria-label", ( config.generatorLinkLabel || "Open exact entropy generator" ) + ". " + text );
 			live.textContent = text;
@@ -321,41 +318,5 @@
 			}
 		} );
 		update();
-	}
-
-	function formatTypedEntropy( bits, config ) {
-		try {
-			return bits.toLocaleString( config.locale || navigator.language || "en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 } );
-		} catch ( error ) {
-			return bits.toFixed( 2 );
-		}
-	}
-
-	function estimateTypedPasswordEntropy( password ) {
-		if ( ! password ) {
-			return NaN;
-		}
-		var groupSizes = [];
-		if ( /[a-z]/.test( password ) ) {
-			groupSizes.push( 26 );
-		}
-		if ( /[A-Z]/.test( password ) ) {
-			groupSizes.push( 26 );
-		}
-		if ( /[0-9]/.test( password ) ) {
-			groupSizes.push( 10 );
-		}
-		if ( /[!-\/:-@\[-`{-~]/.test( password ) ) {
-			groupSizes.push( 32 );
-		}
-		var extraChars = Array.from( password ).filter( function ( char ) {
-			return ! /[A-Za-z0-9!-\/:-@\[-`{-~]/.test( char );
-		} );
-		if ( extraChars.length ) {
-			groupSizes.push( Array.from( new Set( extraChars ) ).length );
-		}
-		return groupSizes.length ? Array.from( password ).length * Math.log2( groupSizes.reduce( function ( sum, size ) {
-			return sum + size;
-		}, 0 ) ) : NaN;
 	}
 }());

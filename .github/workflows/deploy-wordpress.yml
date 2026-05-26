@@ -1,0 +1,153 @@
+name: Deploy to WordPress.org
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Set to true to simulate deployment without SVN commits"
+        required: true
+        default: "true"
+        type: choice
+        options:
+          - "true"
+          - "false"
+      confirm_deploy:
+        description: "Type CONFIRM_DEPLOY to allow SVN deployment"
+        required: true
+        type: string
+      deploy_target:
+        description: "Type wordpress-svn to confirm the deploy target"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy Plugin to WordPress SVN
+    runs-on: ubuntu-latest
+    concurrency:
+      group: wordpress-svn-deploy
+      cancel-in-progress: false
+
+    steps:
+      - name: Validate deployment request
+        run: |
+          if [ "${{ github.event.inputs.dry_run }}" != "true" ] && [ "${{ github.event.inputs.dry_run }}" != "false" ]; then
+            echo "Invalid dry_run value. Use true or false."
+            exit 1
+          fi
+          if [ "${{ github.event.inputs.confirm_deploy }}" != "CONFIRM_DEPLOY" ]; then
+            echo "Invalid confirmation phrase. Aborting deployment."
+            exit 1
+          fi
+          if [ "${{ github.event.inputs.deploy_target }}" != "wordpress-svn" ]; then
+            echo "Invalid deployment target confirmation. Aborting deployment."
+            exit 1
+          fi
+          echo "DRY_RUN=${{ github.event.inputs.dry_run }}" >> "$GITHUB_ENV"
+          echo "Dry run mode: ${{ github.event.inputs.dry_run }}"
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Install SVN
+        run: sudo apt-get update && sudo apt-get install -y subversion
+
+      - name: Determine plugin version
+        run: |
+          PLUGIN_README="wordpress/exact-entropy-password-generator/trunk/readme.txt"
+          PLUGIN_FILE="wordpress/exact-entropy-password-generator/trunk/exact-entropy-password-generator.php"
+
+          PLUGIN_VERSION=$(awk -F': *' '/^Stable tag:/ {gsub(/[[:space:]]/, "", $2); print $2; exit}' "$PLUGIN_README")
+          HEADER_VERSION=$(awk -F': *' '/^[[:space:]]*\\* Version:/ {gsub(/[[:space:]]/, "", $2); print $2; exit}' "$PLUGIN_FILE")
+
+          if [ -z "$PLUGIN_VERSION" ]; then
+            echo "Stable tag was not found in $PLUGIN_README"
+            exit 1
+          fi
+          if [ -z "$HEADER_VERSION" ]; then
+            echo "Version header was not found in $PLUGIN_FILE"
+            exit 1
+          fi
+          if ! printf '%s' "$PLUGIN_VERSION" | grep -Eq '^[0-9]+\.[0-9]+(\.[0-9]+)?$'; then
+            echo "Stable tag has invalid format: $PLUGIN_VERSION"
+            exit 1
+          fi
+          if [ "$PLUGIN_VERSION" != "$HEADER_VERSION" ]; then
+            echo "Stable tag ($PLUGIN_VERSION) does not match plugin header Version ($HEADER_VERSION)."
+            exit 1
+          fi
+          echo "Plugin version detected: $PLUGIN_VERSION"
+          echo "PLUGIN_VERSION=$PLUGIN_VERSION" >> "$GITHUB_ENV"
+
+      - name: Checkout WordPress SVN repository
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+        run: |
+          svn checkout https://plugins.svn.wordpress.org/exact-entropy-password-generator svn-wordpress --username="$SVN_USERNAME" --password="$SVN_PASSWORD" --non-interactive
+
+      - name: Prepare SVN trunk and assets
+        run: |
+          rsync -a --delete --exclude='.DS_Store' wordpress/exact-entropy-password-generator/trunk/ svn-wordpress/trunk/
+          rsync -a --delete --exclude='.DS_Store' wordpress/exact-entropy-password-generator/assets/ svn-wordpress/assets/
+
+          svn status svn-wordpress/trunk svn-wordpress/assets | awk '$1 == "!" {print substr($0,9)}' | while IFS= read -r missing_path; do
+            [ -n "$missing_path" ] || continue
+            svn rm "$missing_path" || true
+          done
+
+          svn add --force svn-wordpress/trunk svn-wordpress/assets || true
+
+      - name: Commit SVN trunk and assets
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+        run: |
+          cd svn-wordpress
+          if svn status trunk assets | grep -q '^[AMDR!]'; then
+            if [ "$DRY_RUN" = "true" ]; then
+              echo "Dry run enabled. Skipping SVN trunk/assets commit."
+              svn status trunk assets
+              exit 0
+            fi
+            svn commit -m "Deploy Exact Entropy Password Generator trunk and assets" --username="$SVN_USERNAME" --password="$SVN_PASSWORD" --non-interactive
+          else
+            echo "No changes in SVN trunk or assets. Skipping commit."
+          fi
+
+      - name: Prepare SVN tag
+        run: |
+          if svn ls "https://plugins.svn.wordpress.org/exact-entropy-password-generator/tags/$PLUGIN_VERSION" > /dev/null 2>&1; then
+            echo "Tag $PLUGIN_VERSION already exists in SVN. Skipping tag deployment."
+            echo "SKIP_TAG=true" >> "$GITHUB_ENV"
+            exit 0
+          fi
+
+          mkdir -p "svn-wordpress/tags/$PLUGIN_VERSION"
+          rsync -a --exclude='.DS_Store' wordpress/exact-entropy-password-generator/trunk/ "svn-wordpress/tags/$PLUGIN_VERSION/"
+          svn add --force "svn-wordpress/tags/$PLUGIN_VERSION" || true
+          echo "SKIP_TAG=false" >> "$GITHUB_ENV"
+
+      - name: Commit SVN tag
+        env:
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+        run: |
+          if [ "$SKIP_TAG" = "true" ]; then
+            exit 0
+          fi
+
+          cd svn-wordpress
+          if svn status "tags/$PLUGIN_VERSION" | grep -q '^[AMDR!]'; then
+            if [ "$DRY_RUN" = "true" ]; then
+              echo "Dry run enabled. Skipping SVN tag commit."
+              svn status "tags/$PLUGIN_VERSION"
+              exit 0
+            fi
+            svn commit -m "Tag Exact Entropy Password Generator $PLUGIN_VERSION" --username="$SVN_USERNAME" --password="$SVN_PASSWORD" --non-interactive
+          else
+            echo "No changes in SVN tag $PLUGIN_VERSION. Skipping commit."
+          fi

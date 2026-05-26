@@ -1,16 +1,17 @@
 <?php
 /**
  * Plugin Name: Exact Entropy Password Generator
- * Plugin URI: https://wordpress.org/plugins/exact-entropy-password-generator/
- * Description: Adds an exact-entropy password generator to the WordPress admin area and shows entropy while backend user passwords are created or updated.
+ * Plugin URI: https://macsteini.github.io/exact-entropy-password-generator
+ * Description: Adds an exact-entropy password generator to the WordPress admin area and links to it while backend user passwords are created or updated.
  * Version: 1.0.0
  * Author: Marco Steinbrecher
  * Author URI: https://profiles.wordpress.org/macsteini
  * Requires at least: 6.0
  * Requires PHP: 7.4
- * License: GPLv3 or later
- * License URI: https://gnu.org/licenses/gpl
+ * License: GPLv2 or later
+ * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: exact-entropy-password-generator
+ * Domain Path: /languages
  *
  * @package ExactEntropyPasswordGenerator
  */
@@ -21,6 +22,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'EEPG_VERSION', '1.0.0' );
 define( 'EEPG_MENU_SLUG', 'exact-entropy-password-generator' );
+
+/**
+ * Load bundled translations when present.
+ */
+function eepg_load_textdomain() {
+	load_plugin_textdomain(
+		'exact-entropy-password-generator',
+		false,
+		dirname( plugin_basename( __FILE__ ) ) . '/languages'
+	);
+}
 
 /**
  * Check whether the current admin screen can create or update normal user passwords.
@@ -39,7 +51,7 @@ function eepg_register_admin_page() {
 	$GLOBALS['eepg_admin_page_hook'] = add_management_page(
 		__( 'Exact Entropy Password Generator', 'exact-entropy-password-generator' ),
 		__( 'Exact Entropy', 'exact-entropy-password-generator' ),
-		'manage_options',
+		'read',
 		EEPG_MENU_SLUG,
 		'eepg_render_admin_page'
 	);
@@ -89,7 +101,7 @@ function eepg_enqueue_admin_assets( $hook_suffix ) {
  * Render the admin generator page.
  */
 function eepg_render_admin_page() {
-	if ( ! current_user_can( 'manage_options' ) ) {
+	if ( ! current_user_can( 'read' ) ) {
 		wp_die( esc_html__( 'You do not have permission to access this page.', 'exact-entropy-password-generator' ) );
 	}
 
@@ -180,6 +192,7 @@ function eepg_render_admin_page() {
 
 add_action( 'admin_menu', 'eepg_register_admin_page' );
 add_action( 'admin_enqueue_scripts', 'eepg_enqueue_admin_assets' );
+add_action( 'plugins_loaded', 'eepg_load_textdomain' );
 
 /**
  * Add a settings shortcut on the plugins screen.
@@ -210,10 +223,8 @@ function eepg_print_user_password_config() {
 		window.EEPG_USER_PASSWORD = {
 			generatorUrl: <?php echo wp_json_encode( admin_url( 'tools.php?page=' . EEPG_MENU_SLUG ) ); ?>,
 			generatorLinkLabel: <?php echo wp_json_encode( __( 'Open exact entropy generator', 'exact-entropy-password-generator' ) ); ?>,
-			locale: <?php echo wp_json_encode( str_replace( '_', '-', get_user_locale() ) ); ?>,
 			label: <?php echo wp_json_encode( __( 'Entropy', 'exact-entropy-password-generator' ) ); ?>,
-			bits: <?php echo wp_json_encode( __( 'bits', 'exact-entropy-password-generator' ) ); ?>,
-			notAvailable: <?php echo wp_json_encode( __( 'not available', 'exact-entropy-password-generator' ) ); ?>
+			notAvailable: <?php echo wp_json_encode( __( 'exact entropy is not available for typed or edited passwords', 'exact-entropy-password-generator' ) ); ?>
 		};
 	</script>
 	<?php

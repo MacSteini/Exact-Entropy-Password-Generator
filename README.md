@@ -1,12 +1,12 @@
 # Exact Entropy Password Generator
 
-Generate random passwords in your browser and see the exact entropy for the settings you chose.
+Generate random passwords in your browser and see how large the possible password space is.
 
 The tool is a single `index.html` file. You can open it on your own computer or host it as a static page on a server.
 
 ## Purpose
 
-Use this tool when you want a random password and want to know how large the possible password space is.
+Use this tool when you want a random password and a clear estimate of how difficult it is to guess by random trial.
 
 It lets you choose the password length and the character groups:
 
@@ -21,7 +21,9 @@ Every selected character group appears at least once in each generated password.
 
 ### On your own computer
 
-Download the repository as a ZIP file from GitHub, unzip it, and open `index.html` in a modern browser.
+Download the GitHub release ZIP, unzip it, and open `index.html` in a modern browser.
+
+The release ZIP contains only the standalone page, this README and the licence file.
 
 You do not need a build step, package manager, server, account, or internet connection.
 
@@ -42,6 +44,12 @@ The expected project-page URL is:
 ```text
 https://macsteini.github.io/exact-entropy-password-generator/
 ```
+
+## WordPress plugin
+
+A separate WordPress plugin is prepared from the same project. It adds the generator to the WordPress admin area and links to it from backend screens where normal user passwords are created or updated.
+
+The WordPress plugin is not part of the GitHub release ZIP for the standalone page. It will be published separately through WordPress.org after the plugin review.
 
 ## Privacy
 
@@ -64,7 +72,7 @@ The password, settings, entropy value and search space do not get sent anywhere 
 
 **Alphabet size** is the number of different characters the generator may use.
 
-**Entropy** measures the size of the random choice in bits. More bits means many more possible passwords.
+**Entropy** measures the size of the random choice in bits. More bits means many more possible passwords could have been generated.
 
 **Search space** is the number of different passwords the current settings can produce.
 
@@ -78,7 +86,7 @@ The entropy guide in the page uses these practical ranges:
 
 These ranges are a guide, not a guarantee. Password reuse, phishing, account recovery and data leaks can still defeat a strong password.
 
-## Technical details: how the tool calculates entropy
+## How the tool calculates entropy
 
 The entropy value comes from the generator rules, not from a guess about the visible password.
 
@@ -147,4 +155,4 @@ Keep changes focused, test `index.html` in a modern browser when the interface c
 
 ## Licence
 
-This project uses the [MIT Licence](LICENCE "MIT Licence"). You may use, change and distribute it under the licence terms.
+This project is licensed under the [GNU General Public License v2.0 or later](LICENCE "GNU General Public License v2.0"). You may use, change and distribute it under the licence terms.

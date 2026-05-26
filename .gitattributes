@@ -1,5 +1,5 @@
-.gitattributes export-ignore
-.github export-ignore
-.github/** export-ignore
-wordpress export-ignore
-wordpress/** export-ignore
+* export-ignore
+
+/README.md -export-ignore
+/index.html -export-ignore
+/LICENCE -export-ignore
