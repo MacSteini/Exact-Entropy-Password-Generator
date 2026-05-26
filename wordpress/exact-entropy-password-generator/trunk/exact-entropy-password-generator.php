@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Exact Entropy Password Generator
- * Plugin URI: https://macsteini.github.io/exact-entropy-password-generator
+ * Plugin URI: https://macsteini.github.io/Exact-Entropy-Password-Generator/
  * Description: Adds an exact-entropy password generator to the WordPress admin area and links to it while backend user passwords are created or updated.
  * Version: 1.0.0
  * Author: Marco Steinbrecher
@@ -11,7 +11,6 @@
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  * Text Domain: exact-entropy-password-generator
- * Domain Path: /languages
  *
  * @package ExactEntropyPasswordGenerator
  */
@@ -22,17 +21,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 define( 'EEPG_VERSION', '1.0.0' );
 define( 'EEPG_MENU_SLUG', 'exact-entropy-password-generator' );
-
-/**
- * Load bundled translations when present.
- */
-function eepg_load_textdomain() {
-	load_plugin_textdomain(
-		'exact-entropy-password-generator',
-		false,
-		dirname( plugin_basename( __FILE__ ) ) . '/languages'
-	);
-}
 
 /**
  * Check whether the current admin screen can create or update normal user passwords.
@@ -192,7 +180,6 @@ function eepg_render_admin_page() {
 
 add_action( 'admin_menu', 'eepg_register_admin_page' );
 add_action( 'admin_enqueue_scripts', 'eepg_enqueue_admin_assets' );
-add_action( 'plugins_loaded', 'eepg_load_textdomain' );
 
 /**
  * Add a settings shortcut on the plugins screen.
