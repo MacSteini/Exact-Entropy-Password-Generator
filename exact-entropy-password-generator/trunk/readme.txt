@@ -1,5 +1,5 @@
 === Exact Entropy Password Generator ===
-Contributors: macsteini
+Contributors: MacSteini
 Tags: password, passwords, entropy, generator, security
 Requires at least: 6.0
 Tested up to: 7.0
