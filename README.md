@@ -106,13 +106,13 @@ The displayed search space is the same valid password count, shown directly for 
 
 ```mermaid
 flowchart TD
-    A[Choose length and character groups] --> B[Build the alphabet]
-    B --> C[Count passwords that include every selected group]
-    C --> D[Calculate entropy: H = log2(valid passwords)]
-    D --> E[Show alphabet size, entropy and search space]
-    B --> F[Generate a random password locally]
-    F --> G[Reject candidates that miss a selected group]
-    G --> H[Show the generated password]
+    A["Choose length and character groups"] --> B["Build the alphabet"]
+    B --> C["Count passwords that include every selected group"]
+    C --> D["Calculate entropy: H = log2 valid passwords"]
+    D --> E["Show alphabet size, entropy and search space"]
+    B --> F["Generate a random password locally"]
+    F --> G["Reject candidates that miss a selected group"]
+    G --> H["Show the generated password"]
 ```
 
 ## Why this only applies to generated passwords
