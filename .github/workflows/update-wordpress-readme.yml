@@ -58,7 +58,7 @@ jobs:
 
       - name: Validate repository readme
         run: |
-          PLUGIN_README="wordpress/exact-entropy-password-generator/trunk/readme.txt"
+          PLUGIN_README="exact-entropy-password-generator/trunk/readme.txt"
           test -f "$PLUGIN_README"
           trunk_stable_tag=$(awk -F': *' '/^Stable tag:/ {gsub(/[[:space:]]/, "", $2); print $2; exit}' "$PLUGIN_README")
           if [ "$trunk_stable_tag" != "$STABLE_TAG" ]; then
@@ -76,8 +76,8 @@ jobs:
       - name: Copy readme files
         run: |
           test -d "svn-wordpress/tags/$STABLE_TAG"
-          cp wordpress/exact-entropy-password-generator/trunk/readme.txt svn-wordpress/trunk/readme.txt
-          cp wordpress/exact-entropy-password-generator/trunk/readme.txt "svn-wordpress/tags/$STABLE_TAG/readme.txt"
+          cp exact-entropy-password-generator/trunk/readme.txt svn-wordpress/trunk/readme.txt
+          cp exact-entropy-password-generator/trunk/readme.txt "svn-wordpress/tags/$STABLE_TAG/readme.txt"
 
       - name: Verify SVN scope
         run: |

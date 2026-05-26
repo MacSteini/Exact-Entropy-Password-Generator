@@ -57,8 +57,8 @@ jobs:
 
       - name: Determine plugin version
         run: |
-          PLUGIN_README="wordpress/exact-entropy-password-generator/trunk/readme.txt"
-          PLUGIN_FILE="wordpress/exact-entropy-password-generator/trunk/exact-entropy-password-generator.php"
+          PLUGIN_README="exact-entropy-password-generator/trunk/readme.txt"
+          PLUGIN_FILE="exact-entropy-password-generator/trunk/exact-entropy-password-generator.php"
 
           PLUGIN_VERSION=$(awk -F': *' '/^Stable tag:/ {gsub(/[[:space:]]/, "", $2); print $2; exit}' "$PLUGIN_README")
           HEADER_VERSION=$(awk -F': *' '/^[[:space:]]*\\* Version:/ {gsub(/[[:space:]]/, "", $2); print $2; exit}' "$PLUGIN_FILE")
@@ -91,8 +91,8 @@ jobs:
 
       - name: Prepare SVN trunk and assets
         run: |
-          rsync -a --delete --exclude='.DS_Store' wordpress/exact-entropy-password-generator/trunk/ svn-wordpress/trunk/
-          rsync -a --delete --exclude='.DS_Store' wordpress/exact-entropy-password-generator/assets/ svn-wordpress/assets/
+          rsync -a --delete --exclude='.DS_Store' exact-entropy-password-generator/trunk/ svn-wordpress/trunk/
+          rsync -a --delete --exclude='.DS_Store' exact-entropy-password-generator/assets/ svn-wordpress/assets/
 
           svn status svn-wordpress/trunk svn-wordpress/assets | awk '$1 == "!" {print substr($0,9)}' | while IFS= read -r missing_path; do
             [ -n "$missing_path" ] || continue
@@ -127,7 +127,7 @@ jobs:
           fi
 
           mkdir -p "svn-wordpress/tags/$PLUGIN_VERSION"
-          rsync -a --exclude='.DS_Store' wordpress/exact-entropy-password-generator/trunk/ "svn-wordpress/tags/$PLUGIN_VERSION/"
+          rsync -a --exclude='.DS_Store' exact-entropy-password-generator/trunk/ "svn-wordpress/tags/$PLUGIN_VERSION/"
           svn add --force "svn-wordpress/tags/$PLUGIN_VERSION" || true
           echo "SKIP_TAG=false" >> "$GITHUB_ENV"
 
