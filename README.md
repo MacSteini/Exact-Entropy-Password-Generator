@@ -37,7 +37,7 @@ The page does not need server-side code. If you publish it for other people, ser
 
 A separate WordPress plugin is prepared from the same project. It adds the generator to the WordPress admin area and links to it from backend screens where normal user passwords are created or updated.
 
-The WordPress plugin is not part of the GitHub release ZIP for the standalone page. It will be published separately through WordPress.org after the plugin review.
+The WordPress plugin is not part of the GitHub release ZIP for the standalone page.
 
 ## Privacy
 
