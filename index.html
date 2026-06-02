@@ -1352,6 +1352,22 @@ transform: translateY(-35%) rotate(225deg);
 background: var(--secondary-bg);
 }
 
+.tip-content,
+.tip-below .tip-content {
+position: fixed;
+inset-inline: max(var(--page-pad), env(safe-area-inset-left)) max(var(--page-pad), env(safe-area-inset-right));
+inset-block-start: auto;
+inset-block-end: calc(var(--space-md) + env(safe-area-inset-bottom));
+inline-size: auto;
+max-block-size: min(18rem, calc(100dvh - (2 * var(--space-md))));
+overflow: auto;
+}
+
+.tip-content::after,
+.tip-below .tip-content::after {
+display: none;
+}
+
 .header-row.is-collapsed {
 gap: 0;
 }
