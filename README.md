@@ -2,7 +2,7 @@
 
 Generate random passwords in your browser and see how large the possible password space is.
 
-The tool is a single `index.html` file. You can open it on your own computer or host it as a static page on a server.
+The tool runs in your browser.
 
 ## Purpose
 
@@ -19,25 +19,11 @@ Every selected character group appears at least once in each generated password.
 
 ## How to use it
 
-### On your own computer
-
-Download the GitHub release ZIP, unzip it, and open `index.html` in a modern browser.
-
-The release ZIP contains only the standalone page, this README and the licence file.
-
-You do not need a build step, package manager, server, account, or internet connection.
-
-### On a server
-
-Upload `index.html` as a static file and open it through a browser.
-
-The page does not need server-side code. If you publish it for other people, serve it over HTTPS.
+Open the [password generator](https://macsteini.github.io/Exact-Entropy-Password-Generator/) in a modern browser. No installation or account is required.
 
 ## WordPress plugin
 
 A separate WordPress plugin is prepared from the same project. It adds the generator to the WordPress admin area and links to it from backend screens where normal user passwords are created or updated.
-
-The WordPress plugin is not part of the GitHub release ZIP for the standalone page.
 
 ## Privacy
 
